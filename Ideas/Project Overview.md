@@ -94,13 +94,20 @@
 2. 接口规范文档
 
 ### 工作日历(To do OE)
+
 10月15日项目开始
 
+```mermaid
 gantt
 	title 工作日历
 	dateFormat YYYY-MM-DD
 	section 文档和思路
-	Active Task Ideas And Document: active, Tempory pushing, 2024-10-15,2024-10-20
+	Ideas		: done		, Not Pushing		, 2024-10-15,3d
+	Documents	: active	, Tempory Pushing	, 2024-10-15,2024-10-20
+	Lab Report 	: 			  Not Pushing		, 2024-11-15,2d
 	section 内存管理器代码
+	Class RAM	: active	, descRAM,2024-10-20,2d
+	Class Page	: active	, descPage,2024-10-20,2d
+	Class PageContainer	:active,descContainer,after descPage,2d
 	section 交互代码
-
+```
