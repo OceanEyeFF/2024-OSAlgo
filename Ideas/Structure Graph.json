@@ -1,0 +1,968 @@
+{
+  "version": 3,
+  "nodes": [
+    {
+      "shape": {
+        "location": [
+          -758.1974166659808,
+          -699.4903938346081
+        ],
+        "size": [
+          316,
+          60
+        ]
+      },
+      "text": "系统内存管理器部分",
+      "uuid": "cf667299-a5e8-4d0f-87b3-587fc1b4d2fd",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        234,
+        179,
+        8
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -2322.1018975950374,
+          -259.5824506923931
+        ],
+        "size": [
+          156,
+          60
+        ]
+      },
+      "text": "虚拟内存",
+      "uuid": "121acf31-1a2f-42a8-8f59-6b828092d415",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        59,
+        130,
+        246
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -2286.140960328236,
+          -31.16081935785259
+        ],
+        "size": [
+          92,
+          60
+        ]
+      },
+      "text": "内存",
+      "uuid": "08df8369-213a-4f0f-b4cd-2fd4a6e677dd",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        59,
+        130,
+        246
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1332.9320576445798,
+          -30.76567840835628
+        ],
+        "size": [
+          102.78125,
+          60
+        ]
+      },
+      "text": "Page",
+      "uuid": "220b6560-d455-4ee5-82ed-4a8308314dd0",
+      "details": "",
+      "children": [
+        "fa04ca72-8b5d-4580-b76c-602f1393420b"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1181.1894577297935,
+          -30.892898880959578
+        ],
+        "size": [
+          252.46875,
+          60
+        ]
+      },
+      "text": "PageContainer",
+      "uuid": "5e2423d2-6285-4a2c-8732-98fd4793564e",
+      "details": "",
+      "children": [
+        "220b6560-d455-4ee5-82ed-4a8308314dd0"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1529.2690274344504,
+          -251.78875835237446
+        ],
+        "size": [
+          188,
+          60
+        ]
+      },
+      "text": "内存管理器",
+      "uuid": "a346599c-9f52-49a5-9187-f759550187f1",
+      "details": "",
+      "children": [
+        "f2ec4991-0b2c-4cbf-ae41-5d39c2b8cc02",
+        "4300bdb3-5df5-4af5-b6bf-c9373d3b9268",
+        "3e7a294a-1c40-4c5c-9e4f-a2bba9475a7f",
+        "2fa16dda-acaf-4d4a-ac16-d976b3302975"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1406.4631461129843,
+          -413.47094580350864
+        ],
+        "size": [
+          183.15625,
+          60
+        ]
+      },
+      "text": "InnerAlloc",
+      "uuid": "f2ec4991-0b2c-4cbf-ae41-5d39c2b8cc02",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1941.3149901344736,
+          -258.7427708640184
+        ],
+        "size": [
+          140.3125,
+          60
+        ]
+      },
+      "text": "PRAlgo",
+      "uuid": "4300bdb3-5df5-4af5-b6bf-c9373d3b9268",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1635.129198233266,
+          -28.051806448288616
+        ],
+        "size": [
+          213.1875,
+          60
+        ]
+      },
+      "text": "MemBclkPtr",
+      "uuid": "fa04ca72-8b5d-4580-b76c-602f1393420b",
+      "details": "",
+      "children": [
+        "08df8369-213a-4f0f-b4cd-2fd4a6e677dd"
+      ],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -2022.0951588530045,
+          -42.673193020004256
+        ],
+        "size": [
+          316,
+          60
+        ]
+      },
+      "text": "检查是否是内存地址",
+      "uuid": "8583e9ad-c5d6-4ef9-9972-7269f4340837",
+      "details": "",
+      "children": [
+        "4300bdb3-5df5-4af5-b6bf-c9373d3b9268"
+      ],
+      "isColorSetByUser": false,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1648.671917537254,
+          -410.3501626393194
+        ],
+        "size": [
+          172.296875,
+          60
+        ]
+      },
+      "text": "InnerFree",
+      "uuid": "3e7a294a-1c40-4c5c-9e4f-a2bba9475a7f",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1690.3025328405165,
+          -148.17375186476804
+        ],
+        "size": [
+          193.21875,
+          60
+        ]
+      },
+      "text": "CheckFunc",
+      "uuid": "2fa16dda-acaf-4d4a-ac16-d976b3302975",
+      "details": "",
+      "children": [
+        "8583e9ad-c5d6-4ef9-9972-7269f4340837"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1212.6429453421554,
+          -914.9526357575511
+        ],
+        "size": [
+          169.671875,
+          60
+        ]
+      },
+      "text": "类/结构体",
+      "uuid": "90b2c55e-1581-48c9-a208-79ff8814576a",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -924.3227133944833,
+          -914.9526357575511
+        ],
+        "size": [
+          156,
+          60
+        ]
+      },
+      "text": "函数接口",
+      "uuid": "9cb22977-cb77-425b-9918-bba9f6182ff2",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -626.4712341096979,
+          -914.9526357575511
+        ],
+        "size": [
+          92,
+          60
+        ]
+      },
+      "text": "模块",
+      "uuid": "d969a000-3d8f-4464-8c51-55f5381f2223",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        234,
+        179,
+        8
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -281.977909954868,
+          -335.4256714431458
+        ],
+        "size": [
+          167.1875,
+          60
+        ]
+      },
+      "text": "TAllocate",
+      "uuid": "ba5ac841-71c7-4bf8-9c6a-21c35b7e034e",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -304.540409954868,
+          -133.66868656395684
+        ],
+        "size": [
+          212.3125,
+          60
+        ]
+      },
+      "text": "TDeAllocate",
+      "uuid": "0402d045-a9a6-44b8-8b63-b687dcaca8d0",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -269.063847454868,
+          67.28636691370517
+        ],
+        "size": [
+          141.359375,
+          60
+        ]
+      },
+      "text": "TUsage",
+      "uuid": "2c383a07-c7c0-43c9-b802-e51bd5d794a1",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -284.532597454868,
+          270.9035385219373
+        ],
+        "size": [
+          172.296875,
+          60
+        ]
+      },
+      "text": "TFreeSize",
+      "uuid": "6aa3e848-3cec-452e-9daf-e7bd28d38d39",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -273.556034954868,
+          -535.6229790209364
+        ],
+        "size": [
+          150.34375,
+          60
+        ]
+      },
+      "text": "TReport",
+      "uuid": "cf77b1d2-43a5-48d6-a55c-728243f7de20",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -313.98610438429864,
+          469.18936890159625
+        ],
+        "size": [
+          225.34375,
+          60
+        ]
+      },
+      "text": "TSetPrivilage",
+      "uuid": "41093bea-78ac-4bb0-982d-c12ef98b6836",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        239,
+        68,
+        68
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -274.90882569733617,
+          -699.4903938346081
+        ],
+        "size": [
+          156,
+          60
+        ]
+      },
+      "text": "公开接口",
+      "uuid": "b1693661-d905-4f9f-ba0e-2ebbd75b19d3",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        234,
+        179,
+        8
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -851.1639059420434,
+          -29.528947056584656
+        ],
+        "size": [
+          397.828125,
+          60
+        ]
+      },
+      "text": "Vector<PageContainer>",
+      "uuid": "42e31ee3-97fe-4aa3-8ec3-1fcebe3c6756",
+      "details": "",
+      "children": [
+        "5e2423d2-6285-4a2c-8732-98fd4793564e"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -2285.3164348904315,
+          339.55384490439155
+        ],
+        "size": [
+          102.78125,
+          60
+        ]
+      },
+      "text": "Page",
+      "uuid": "9065ca35-d262-443f-b693-e1ccbb0fcf4a",
+      "details": "",
+      "children": [
+        "bf85229c-f460-4dd7-87aa-591afb597a84",
+        "bf8eb6f6-a258-412e-9ce3-d65fdff9e3b3"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -2125.4775610117445,
+          250.6660120337379
+        ],
+        "size": [
+          213.1875,
+          60
+        ]
+      },
+      "text": "MemBclkPtr",
+      "uuid": "bf85229c-f460-4dd7-87aa-591afb597a84",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -2112.8117704682068,
+          417.1310865593972
+        ],
+        "size": [
+          172.25,
+          60
+        ]
+      },
+      "text": "UniqueID",
+      "uuid": "bf8eb6f6-a258-412e-9ce3-d65fdff9e3b3",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1884.6192415108771,
+          339.92280812043646
+        ],
+        "size": [
+          252.46875,
+          60
+        ]
+      },
+      "text": "PageContainer",
+      "uuid": "d4bd9b91-7069-4cdc-b14a-78da9146dd32",
+      "details": "",
+      "children": [
+        "942c7a77-8241-4c8c-b379-4e47484c343b",
+        "e75b53c3-e9de-4a7e-87c0-547029cc35ec",
+        "e4cbd360-c555-43d1-bc06-8637018caf1b"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1498.885657300089,
+          210.89364123332007
+        ],
+        "size": [
+          248.140625,
+          60
+        ]
+      },
+      "text": "Vector<Page>",
+      "uuid": "942c7a77-8241-4c8c-b379-4e47484c343b",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1498.885657300089,
+          348.40793856317947
+        ],
+        "size": [
+          278.5625,
+          60
+        ]
+      },
+      "text": "CurrentPageSize",
+      "uuid": "e75b53c3-e9de-4a7e-87c0-547029cc35ec",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1498.885657300089,
+          471.44704670042177
+        ],
+        "size": [
+          353.234375,
+          60
+        ]
+      },
+      "text": "CurrentPageRAMSize",
+      "uuid": "e4cbd360-c555-43d1-bc06-8637018caf1b",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1163.8189066826976,
+          347.16251963868336
+        ],
+        "size": [
+          397.828125,
+          60
+        ]
+      },
+      "text": "Vector<PageContainer>",
+      "uuid": "03ec9c27-c5a6-4af4-88f8-d016e30b2878",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -731.3842720578883,
+          -424.60342605366384
+        ],
+        "size": [
+          192.21875,
+          60
+        ]
+      },
+      "text": "EPageAlgo",
+      "uuid": "76a64097-6e36-4d27-9302-996722c72c39",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1630.435809432927,
+          -914.9526357575511
+        ],
+        "size": [
+          92,
+          60
+        ]
+      },
+      "text": "变量",
+      "uuid": "318d072c-afe0-4dd9-abcf-97da0491c223",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": false,
+      "userColor": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1459.380039914781,
+          -914.9526357575511
+        ],
+        "size": [
+          156,
+          60
+        ]
+      },
+      "text": "全局变量",
+      "uuid": "76311639-886c-4a50-a133-ad90b0c0f865",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        168,
+        85,
+        247
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1862.415028266298,
+          -914.9526357575511
+        ],
+        "size": [
+          156,
+          60
+        ]
+      },
+      "text": "系统资源",
+      "uuid": "e0864411-4871-47ff-9fd4-12cc8a6580d9",
+      "details": "",
+      "children": [],
+      "isColorSetByUser": true,
+      "userColor": [
+        59,
+        130,
+        246
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -2258.9327582837873,
+          460.24719843792593
+        ],
+        "size": [
+          60,
+          60
+        ]
+      },
+      "text": "页",
+      "uuid": "e0f5f20c-80dd-41df-bbcc-a9abfcccf448",
+      "details": "",
+      "children": [
+        "9065ca35-d262-443f-b693-e1ccbb0fcf4a"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1836.3817578523876,
+          461.3923754294732
+        ],
+        "size": [
+          156,
+          60
+        ]
+      },
+      "text": "一级页表",
+      "uuid": "5de9dd62-b50f-4f1e-9015-d4c1bf532879",
+      "details": "",
+      "children": [
+        "d4bd9b91-7069-4cdc-b14a-78da9146dd32"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    },
+    {
+      "shape": {
+        "location": [
+          -1043.5028450924942,
+          465.8874117598125
+        ],
+        "size": [
+          156,
+          60
+        ]
+      },
+      "text": "二级页表",
+      "uuid": "c2802b2a-6b8e-40d6-bab1-c64faa80694d",
+      "details": "",
+      "children": [
+        "03ec9c27-c5a6-4af4-88f8-d016e30b2878"
+      ],
+      "isColorSetByUser": true,
+      "userColor": [
+        22,
+        163,
+        74
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "5e2423d2-6285-4a2c-8732-98fd4793564e",
+      "target": "220b6560-d455-4ee5-82ed-4a8308314dd0",
+      "text": ""
+    },
+    {
+      "source": "a346599c-9f52-49a5-9187-f759550187f1",
+      "target": "f2ec4991-0b2c-4cbf-ae41-5d39c2b8cc02",
+      "text": ""
+    },
+    {
+      "source": "a346599c-9f52-49a5-9187-f759550187f1",
+      "target": "4300bdb3-5df5-4af5-b6bf-c9373d3b9268",
+      "text": ""
+    },
+    {
+      "source": "220b6560-d455-4ee5-82ed-4a8308314dd0",
+      "target": "fa04ca72-8b5d-4580-b76c-602f1393420b",
+      "text": ""
+    },
+    {
+      "source": "a346599c-9f52-49a5-9187-f759550187f1",
+      "target": "3e7a294a-1c40-4c5c-9e4f-a2bba9475a7f",
+      "text": ""
+    },
+    {
+      "source": "8583e9ad-c5d6-4ef9-9972-7269f4340837",
+      "target": "4300bdb3-5df5-4af5-b6bf-c9373d3b9268",
+      "text": "不是执行缺页算法"
+    },
+    {
+      "source": "4300bdb3-5df5-4af5-b6bf-c9373d3b9268",
+      "target": "4300bdb3-5df5-4af5-b6bf-c9373d3b9268",
+      "text": ""
+    },
+    {
+      "source": "a346599c-9f52-49a5-9187-f759550187f1",
+      "target": "2fa16dda-acaf-4d4a-ac16-d976b3302975",
+      "text": ""
+    },
+    {
+      "source": "2fa16dda-acaf-4d4a-ac16-d976b3302975",
+      "target": "8583e9ad-c5d6-4ef9-9972-7269f4340837",
+      "text": ""
+    },
+    {
+      "source": "fa04ca72-8b5d-4580-b76c-602f1393420b",
+      "target": "08df8369-213a-4f0f-b4cd-2fd4a6e677dd",
+      "text": ""
+    },
+    {
+      "source": "42e31ee3-97fe-4aa3-8ec3-1fcebe3c6756",
+      "target": "5e2423d2-6285-4a2c-8732-98fd4793564e",
+      "text": ""
+    },
+    {
+      "source": "9065ca35-d262-443f-b693-e1ccbb0fcf4a",
+      "target": "bf85229c-f460-4dd7-87aa-591afb597a84",
+      "text": ""
+    },
+    {
+      "source": "9065ca35-d262-443f-b693-e1ccbb0fcf4a",
+      "target": "bf8eb6f6-a258-412e-9ce3-d65fdff9e3b3",
+      "text": ""
+    },
+    {
+      "source": "d4bd9b91-7069-4cdc-b14a-78da9146dd32",
+      "target": "942c7a77-8241-4c8c-b379-4e47484c343b",
+      "text": ""
+    },
+    {
+      "source": "d4bd9b91-7069-4cdc-b14a-78da9146dd32",
+      "target": "e75b53c3-e9de-4a7e-87c0-547029cc35ec",
+      "text": ""
+    },
+    {
+      "source": "d4bd9b91-7069-4cdc-b14a-78da9146dd32",
+      "target": "e4cbd360-c555-43d1-bc06-8637018caf1b",
+      "text": ""
+    },
+    {
+      "source": "e0f5f20c-80dd-41df-bbcc-a9abfcccf448",
+      "target": "9065ca35-d262-443f-b693-e1ccbb0fcf4a",
+      "text": ""
+    },
+    {
+      "source": "5de9dd62-b50f-4f1e-9015-d4c1bf532879",
+      "target": "d4bd9b91-7069-4cdc-b14a-78da9146dd32",
+      "text": ""
+    },
+    {
+      "source": "c2802b2a-6b8e-40d6-bab1-c64faa80694d",
+      "target": "03ec9c27-c5a6-4af4-88f8-d016e30b2878",
+      "text": ""
+    }
+  ]
+}
