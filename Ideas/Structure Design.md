@@ -34,7 +34,7 @@
 使用char*模拟内存块
 
 ```C++
-namespace VirtualSystemMemoryAllocator
+namespace VirtualSystemMemoryController
 {
 	char* pMemory;
 	char* pDiskMemory;
@@ -69,7 +69,7 @@ enum class EPageAlgoType
 	eFIFO,
 	eLRU,
 	eClock,
-	eInprovedClock
+	eImprovedClock
 };
 ```
 
