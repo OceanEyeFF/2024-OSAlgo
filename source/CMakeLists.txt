@@ -11,4 +11,14 @@ include_directories(public)
 file(GLOB PRIVATE_SOURCES private/*.cpp )
 
 # 添加可执行文件
-add_executable(main main.cpp ${PRIVATE_SOURCES})
+add_executable(${PROJECT_NAME} main.cpp ${PRIVATE_SOURCES})
+
+# To Do
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+
+elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+
+else()
+	message("for unknown platform: Generating Makefile")
+
+endif()

@@ -4,7 +4,7 @@
    Author        : OceanEyeFF
    Email         : fdch00@163.com
    File Name     : Project Overview.md
-   Last Modified : 2024-10-20 02:37
+   Last Modified : 2024-10-21 13:58
    Describe      : 
 
 -->
@@ -90,8 +90,10 @@
 
 ### 其他文档(To do OE)
 
-1. 架构设计文档
-2. 接口规范文档
+1. 架构设计文档 Structure Design.md
+2. 接口描述文档 Class Design Document/
+3. 代码注释文档 
+4. 文档编写规范文档 Project Develop Document/
 
 ### 工作日历(To do OE)
 

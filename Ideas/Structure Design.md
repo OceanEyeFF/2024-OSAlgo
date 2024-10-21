@@ -4,7 +4,7 @@
    Author        : OceanEyeFF
    Email         : fdch00@163.com
    File Name     : Structure Design.md
-   Last Modified : 2024-10-20 02:17
+   Last Modified : 2024-10-21 14:49
    Describe      : 
 
 -->
@@ -17,7 +17,7 @@
 2. 主函数端，用于处理和样例文件和测试文件的交互
 
 内存管理器端的进一步模块化会在下面进行。
-主函数的进一步模块化 **TO DO (OE) **
+主函数的模块化 **TO DO (OE) **
 
 ------
 
@@ -27,11 +27,12 @@
 
 ![image-20241020021502638](https://s2.loli.net/2024/10/20/eY2SQ6FqgA41J8n.png)
 
-#### 全局变量
-
 #### 内存与虚拟内存管理器
 
 使用char*模拟内存块
+默认内存大小为16384B
+默认磁盘大小为49152B
+默认磁盘块大小为8位256B
 
 ```C++
 namespace VirtualSystemMemoryController
@@ -42,12 +43,10 @@ namespace VirtualSystemMemoryController
 ```
 
 同时编写一个内存管理器，能够做到
-1. 分配内存，和释放内存(Alloc DeAlloc/Free)
-2. 输入一个指针能够区分是内存指针还是虚拟内存指针
-3. 能够执行页面交换算法
-4. 能够根据Enum EPageAlgo来设置使用的页面交换算法
+1. 读写内存(Alloc DeAlloc/Free)
+2. 交换指定的内存和虚拟内存
+3. *Extend:支持内存区块的有保护的多线程读写*
 
-**To do OE**
 ```C++
 namespace VirtualSystemMemoryAllocator
 {
@@ -55,11 +54,36 @@ namespace VirtualSystemMemoryAllocator
 	{
 		private:
 		public:
+			Alloc()
+			DeAlloc()
+			Swap()
 	};
 }
 ```
 
-#### ePageAlgo
+#### 页面管理逻辑
+
+内存地址编码如下：
+16位地址 =  块内地址8位 + 一级页表6位 + 二级页表2位
+
+**设置内存大小为16384B，缓存大小为16384B*3 = 49152B **
+1. 每一个页(Page)有其对应的存储块结构(MemBclk)，一个存储块结构存储256B的数据
+2. 一个页表(PageContainer)中最多有32个页
+```
+
+∵	一个页表可用内存空间大小在		16384B/4=4096B
+又∵	页表中总管理的存储块大小在		256B*64	=16384B 
+
+∴ 期望命中率至少是25%
+
+```
+
+页表结构体同时负责处理页面置换算法和页面均衡负载
+
+页面处理算法文档：ToDo OE
+页面均衡负载文档：ToDO OE
+
+##### ePageAlgo
 
 **C++ 11 支持使用enum class **
 
@@ -73,7 +97,7 @@ enum class EPageAlgoType
 };
 ```
 
-#### Page 页
+##### Page 页
 
 考虑设计一个多算法泛用的Page，并且支持在Page基类上进行派生
 他的基础结构应该要具有最基本的内存地址指针和页换出算法所使用的标识
@@ -81,31 +105,66 @@ enum class EPageAlgoType
 ```C++
 Class PageUnitBase
 {
-	char* pMemBclkPtr;
+	AddressPtr pMemBclkPtr;
 	unsigned short int PageUniqueVariable;
+	bool present;
 	
 	PageUnitBase();
 	~PageUnitBase();
 };
 ```
 
-#### PageContainer 页表
+##### PageContainer 页表
 
 页面算法的容器，需要支持的基本功能有
-1. 容器的功能
+1. 容器的基本功能（增删改查）
 2. 在PageContainer初始化阶段可以选择缺页换页算法
-3. 插入页
-4. 取消指定  页的占用 
+3. 维护在内存和在磁盘中的页面信息
 
-为了使架构简单易懂，考虑使用函数指针来实现PageContainer的
-1. 插入页
-2. 删除页
-3. 寻找符合要求的交换页的函数
-4. 针对高频次触发页面交换的页表进行容量拓展
+为了使架构简单易懂，考虑使用函数指针来实现PageContainer的缺页算法
+*进一步如果需要优化算法可能考虑页表的内存区域容量拓展算法*
+
+##### 页面替换算法设计
+
+专开一个文件来写(To Do OE)
+
+##### AddressPtr和AddressConj
+地址指针和地址联合体
+地址指针类型全局可用
+地址联合体是用于解析地址指针到每一个层级的变量
+
+* 总内存大小是32768B，虚拟内存大小是98304B
+* 地址指针有16位，8位页内地址，5位页码，3位二级页码
+* AddressConj是页面操作的主要载体
+
+```C++
+
+struct AddressPtr
+{
+	int16_t __ptr__;
+};
+
+struct AddressConj
+{
+	int8_t innerAddress;
+	int8_t PageID;
+	int8_t PageContainerID;
+};
+
+```
 
 #### 二级页表 TO DO OE
 
-#### 虚拟内存环境对外接口
+实现的方法
+* std :: vector<PageContainer> 
+* class Page[a-z]*
+* <template typename T> class Container<T>
+*写一个通用Container，然后给不同类型的Container增加实现*
+
+*考虑多线程设计*
+
+
+### 虚拟内存环境对外接口
 
 虚拟内存环境需要设计以下的基础接口：
 
@@ -117,6 +176,4 @@ Class PageUnitBase
 	TFreeSize();
 	TSetPrivilege
 ```
-
-### 页面替换算法设计
 

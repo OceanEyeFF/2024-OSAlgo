@@ -3,17 +3,21 @@
 #
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
-#   File Name     : main.cpp
-#   Last Modified : 2024-10-21 16:36
+#   File Name     : MemInterface.h
+#   Last Modified : 2024-10-21 01:28
 #   Describe      : 
 #
 # ====================================================*/
 
-#include <iostream>
-#include "CommonHeaders.h"
+#pragma once
 
-int main()
-{
-	std::cout << "Hello World" << std::endl;
-	return 0;
-}
+#ifndef  _MEMINTERFACE_H
+#define  _MEMINTERFACE_H
+
+#include "Page.h"
+
+extern struct AddressPtr;
+
+#endif // _MEMINTERFACE_H
+	   //
+	   //
