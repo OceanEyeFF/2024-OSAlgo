@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : CommonHeaders.h
-#   Last Modified : 2024-10-21 15:38
+#   Last Modified : 2024-10-22 20:49
 #   Describe      : 
 #
 # ====================================================*/
@@ -16,12 +16,20 @@
 
 #include <cstdint>
 
-#define TOTAL_MEMSIZE		131072
-#define LOCAL_MEMORYSIZE	32768
-#define DISK_MEMORYSIZE		98034
+#if defined(PLATFORM_LINUX)
+#include <unistd.h>
+
+#elif defined(PLATFORM_WIN)
+#include <Windows.h>
+
+#endif
+
+#define TOTAL_MEMSIZE		65536
+#define LOCAL_MEMORYSIZE	16384
+#define DISK_MEMORYSIZE		49152
 #define BCLK_SIZE			256
 #define	PAGE_PER_CONTAINER	64
-#define CONTAINER			4
+#define CONTAINER_SIZE		4
 
 struct AddressPtr
 {

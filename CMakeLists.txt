@@ -21,7 +21,6 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 	message("current platform: Windows")
 	message("generating Windows Visual Studio Solution")
-
 else()
 	message("current platform: unknown")
 

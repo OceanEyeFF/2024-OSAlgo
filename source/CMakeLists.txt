@@ -15,8 +15,12 @@ add_executable(${PROJECT_NAME} main.cpp ${PRIVATE_SOURCES})
 
 # To Do
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+	message("for Linux : Generating Makefile")
+	add_definitions( "-DPLATFORM_LINUX" )
 
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+	message("for Win : Generating Makefile")
+	add_definitions( "-DPLATFORM_WIN" )
 
 else()
 	message("for unknown platform: Generating Makefile")

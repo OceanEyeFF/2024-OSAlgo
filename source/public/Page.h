@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : Page.h
-#   Last Modified : 2024-10-21 15:41
+#   Last Modified : 2024-10-23 01:41
 #   Describe      : 
 #
 # ====================================================*/
@@ -15,10 +15,18 @@
 #define  _PAGE_H
 
 #include <functional>
+#include <cstring>
+#include <bitset>
+#include <cstdint>
+#include <cstring>
+#include <cstddef>
 
 #include "CommonHeaders.h"
 #include "VirtualSystemMemory.h"
 
+// AddressConj
+// MemoryAddressConverter
+//
 struct AddressConj
 {
 	int8_t innerAddress;
@@ -36,19 +44,69 @@ struct AddressConj
 
 extern EPageAlgoType EPageAlgo;
 void SetPageAlgo(int32_t type);
+void SetPageAlgo(EPageAlgoType type);
 
-class Page
+struct PageEntry
 {
-	AddressPtr pMemBclkPtr;
-	unsigned short int PageUniqueVariable;
-	bool present;
+	int16_t frameNumber;
+	int16_t PageUniqueVariable; // Algo
 
-	Page();
-	~Page();
+	std::bitset<8> STATUSBITS; // 0	Present bits
+						  // Below Temporary Unused
+						  // 1	Dirty bits
+						  // 2	Referenced bit
+						  // 3	Protected bit
+						  // 4	Read Permision
+						  // 5	Write Permision
+						  // 6	Execute Permision
+						  // 7	Check Bit
+
+	PageEntry(){}
+	PageEntry(int frameNo,int PageVar,bool ispresent):frameNumber(frameNo),PageUniqueVariable(PageVar)
+	{
+		STATUSBITS[0]=ispresent?1:0;
+	}
+
+	bool isPresent();
+	void setPresent();
+	void resetPresent();
+
+	void Alloc();
+	void deAlloc();
+
+	char* GetPhysicalPtr();
+	// To DO
+	//
+	void Read(char* Dst);
+	void Write(char* Src);
+	void Read(char* Dst, size_t size);
+	void Write(char* Src, size_t size);
 };
 
-class PageContainer
+class PageContainer// 二级页表
 {
+	std :: bitset<32> PagesUsage;
+	PageEntry Pages[32];
+
+	private:
+		// To Do
+		void ExecPageReplacementFunc(int8_t PageID);
+	public:
+		PageContainer();
+
+		int8_t AllocNewPage();
+		void deAllocPage(int8_t Page);
+
+		// To Do
+		bool TryVisitPage(int8_t PageID);
+		void ForcePresentPage(int8_t PageID);
+
+		char* GetPhysicalPtr(AddressConj AddrConj);
+		void Read(AddressConj AddrConj, char* Dst);
+		void Write(AddressConj AddrConj, char* Src);
+
+		void Read(AddressConj AddrConj, char* Dst, size_t size);
+		void Write(AddressConj AddrConj, char* Src, size_t size);
 };
 
 #endif // _PAGE_H

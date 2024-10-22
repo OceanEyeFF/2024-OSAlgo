@@ -4,7 +4,7 @@
    Author        : OceanEyeFF
    Email         : fdch00@163.com
    File Name     : Structure Design.md
-   Last Modified : 2024-10-21 14:49
+   Last Modified : 2024-10-22 01:39
    Describe      : 
 
 -->
@@ -68,14 +68,15 @@ namespace VirtualSystemMemoryAllocator
 
 **设置内存大小为16384B，缓存大小为16384B*3 = 49152B **
 1. 每一个页(Page)有其对应的存储块结构(MemBclk)，一个存储块结构存储256B的数据
-2. 一个页表(PageContainer)中最多有32个页
-```
+2. 一级页表(PageContainer)中最多有64个一级页表
+3. 由4个一级页表组成二级页表
+4. 存储空间中平均能够给每个一级页表16个可用MemBclk
 
+```
 ∵	一个页表可用内存空间大小在		16384B/4=4096B
 又∵	页表中总管理的存储块大小在		256B*64	=16384B 
 
 ∴ 期望命中率至少是25%
-
 ```
 
 页表结构体同时负责处理页面置换算法和页面均衡负载
