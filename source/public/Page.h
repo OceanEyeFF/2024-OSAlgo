@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : Page.h
-#   Last Modified : 2024-10-23 01:41
+#   Last Modified : 2024-10-23 20:27
 #   Describe      : 
 #
 # ====================================================*/
@@ -22,7 +22,7 @@
 #include <cstddef>
 
 #include "CommonHeaders.h"
-#include "VirtualSystemMemory.h"
+#include "VirtualMemorySystem.h"
 
 // AddressConj
 // MemoryAddressConverter
@@ -48,7 +48,7 @@ void SetPageAlgo(EPageAlgoType type);
 
 struct PageEntry
 {
-	int16_t frameNumber;
+	int16_t FrameNumber;
 	int16_t PageUniqueVariable; // Algo
 
 	std::bitset<8> STATUSBITS; // 0	Present bits
@@ -62,7 +62,7 @@ struct PageEntry
 						  // 7	Check Bit
 
 	PageEntry(){}
-	PageEntry(int frameNo,int PageVar,bool ispresent):frameNumber(frameNo),PageUniqueVariable(PageVar)
+	PageEntry(int FrameNo,int PageVar,bool ispresent):FrameNumber(FrameNo),PageUniqueVariable(PageVar)
 	{
 		STATUSBITS[0]=ispresent?1:0;
 	}
@@ -75,15 +75,15 @@ struct PageEntry
 	void deAlloc();
 
 	char* GetPhysicalPtr();
-	// To DO
-	//
+
+
 	void Read(char* Dst);
 	void Write(char* Src);
 	void Read(char* Dst, size_t size);
 	void Write(char* Src, size_t size);
 };
 
-class PageContainer// 二级页表
+class PageContainer// 一级页表
 {
 	std :: bitset<32> PagesUsage;
 	PageEntry Pages[32];

@@ -25,14 +25,16 @@
 
 #### 架构图
 
-![image-20241020021502638](https://s2.loli.net/2024/10/20/eY2SQ6FqgA41J8n.png)
+![](https://markdown-document-1253470282.cos.ap-guangzhou.myqcloud.com/2024OS内存管理器端.jpg)
 
 #### 内存与虚拟内存管理器
 
 使用char*模拟内存块
 默认内存大小为16384B
 默认磁盘大小为49152B
-默认磁盘块大小为8位256B
+默认存储单元大小为8位256B
+
+*通常现代操作系统中的存储单元大小为12位4096B*
 
 ```C++
 namespace VirtualSystemMemoryController
@@ -54,9 +56,11 @@ namespace VirtualSystemMemoryAllocator
 	{
 		private:
 		public:
-			Alloc()
-			DeAlloc()
-			Swap()
+			Alloc();
+			DeAlloc();
+			Swap();
+        	Read();
+        	Write();
 	};
 }
 ```
@@ -79,14 +83,7 @@ namespace VirtualSystemMemoryAllocator
 ∴ 期望命中率至少是25%
 ```
 
-页表结构体同时负责处理页面置换算法和页面均衡负载
-
-页面处理算法文档：ToDo OE
-页面均衡负载文档：ToDO OE
-
 ##### ePageAlgo
-
-**C++ 11 支持使用enum class **
 
 ```C++
 enum class EPageAlgoType
@@ -129,7 +126,11 @@ Class PageUnitBase
 
 专开一个文件来写(To Do OE)
 
+页面处理算法文档：ToDo OE
+页面均衡负载文档：ToDO OE
+
 ##### AddressPtr和AddressConj
+
 地址指针和地址联合体
 地址指针类型全局可用
 地址联合体是用于解析地址指针到每一个层级的变量
@@ -159,11 +160,9 @@ struct AddressConj
 实现的方法
 * std :: vector<PageContainer> 
 * class Page[a-z]*
-* <template typename T> class Container<T>
-*写一个通用Container，然后给不同类型的Container增加实现*
+* ``` <template typename T> class Container<T>```
 
 *考虑多线程设计*
-
 
 ### 虚拟内存环境对外接口
 

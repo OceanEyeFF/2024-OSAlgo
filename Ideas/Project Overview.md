@@ -103,13 +103,21 @@
 gantt
 	title 工作日历
 	dateFormat YYYY-MM-DD
+
 	section 文档和思路
-	Ideas		: done		, Not Pushing		, 2024-10-15,3d
-	Documents	: active	, Tempory Pushing	, 2024-10-15,2024-10-20
-	Lab Report 	: 			  Not Pushing		, 2024-11-15,2d
+	Ideas		: done		,	Not Pushing		,2024-10-15,5d
+	Documents	: active	,	Tempory Pushing	,2024-10-15,2024-10-23
+	Lab Report 	: 			,	Not Pushing		,2024-11-15,2d
+
 	section 内存管理器代码
-	Class RAM	: active	, descRAM,2024-10-20,2d
-	Class Page	: active	, descPage,2024-10-20,2d
-	Class PageContainer	:active,descContainer,after descPage,2d
+	RAM			: active	,	descRAM			,2024-10-20,3d
+	Page		: active	,	descPage		,2024-10-20,3d
+	Container	: active	,	descContainer	,2024-10-21,2d
+	Algo		: active	,	descContainer	,2024-10-23,5d
+	RAM-doc		: active	,	descRAM			,2024-10-20,3d
+	Page-doc	: active	,	descPage		,2024-10-20,3d
+	Containerdoc: active	,	descContainer	,2024-10-21,2d
+	Algo-doc	: active	,	descContainer	,2024-10-23,5d
+
 	section 交互代码
 ```

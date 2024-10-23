@@ -4,13 +4,12 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : Page.cpp
-#   Last Modified : 2024-10-23 01:52
+#   Last Modified : 2024-10-23 17:31
 #   Describe      : 
 #
 # ====================================================*/
 
 #include "Page.h"
-#include <cstdint>
 
 EPageAlgoType EPageAlgo;
 
@@ -75,7 +74,7 @@ void PageEntry::resetPresent()
 // Not Finished : Algo
 void PageEntry::Alloc()
 {
-	frameNumber = VirtualSystemMemory::MemoryController::AllocDisk();
+	FrameNumber = VirtualMemorySystem::MemoryController::AllocDisk();
 //	PageUniqueVariable =
 //	
 //
@@ -87,11 +86,11 @@ void PageEntry::deAlloc()
 {
 	if(STATUSBITS[1])
 	{
-		VirtualSystemMemory::MemoryController::deAllocLocalMem(frameNumber);
+		VirtualMemorySystem::MemoryController::deAllocLocalMem(FrameNumber);
 	}
 	else
 	{
-		VirtualSystemMemory::MemoryController::deAllocDiskMem(frameNumber);
+		VirtualMemorySystem::MemoryController::deAllocDiskMem(FrameNumber);
 	}
 	STATUSBITS.reset();
 }
@@ -100,11 +99,11 @@ char* PageEntry::GetPhysicalPtr()
 {
 	if(STATUSBITS[0])
 	{
-		return VirtualSystemMemory::MemoryController::GetLocalPhysicalPtr(frameNumber);
+		return VirtualMemorySystem::MemoryController::GetLocalPhysicalPtr(FrameNumber);
 	}
 	else
 	{
-		return VirtualSystemMemory::MemoryController::GetDiskPhysicalPtr(frameNumber);
+		return nullptr; // Not in Memory But in Disk
 	}
 
 }
@@ -118,7 +117,7 @@ void PageEntry::Read(char* Dst)
 		// LOG: Reading Failed
 		return;
 	}
-	VirtualSystemMemory::MemoryController::Read(Dst, GetPhysicalPtr(), BCLK_SIZE);
+	VirtualMemorySystem::MemoryController::Read(Dst, GetPhysicalPtr(), BCLK_SIZE);
 }
 
 void PageEntry::Write(char* Src)
@@ -130,7 +129,7 @@ void PageEntry::Write(char* Src)
 		// LOG: Writing Failed
 		return;
 	}
-	VirtualSystemMemory::MemoryController::Write(Src, GetPhysicalPtr(), BCLK_SIZE);
+	VirtualMemorySystem::MemoryController::Write(Src, GetPhysicalPtr(), BCLK_SIZE);
 }
 
 void PageEntry::Read(char* Dst, size_t size)
@@ -151,7 +150,7 @@ void PageEntry::Read(char* Dst, size_t size)
 		// LOG: Reading Failed
 		return;
 	}
-	VirtualSystemMemory::MemoryController::Read(Dst, GetPhysicalPtr(), size);
+	VirtualMemorySystem::MemoryController::Read(Dst, GetPhysicalPtr(), size);
 }
 
 void PageEntry::Write(char* Src, size_t size)
@@ -172,7 +171,7 @@ void PageEntry::Write(char* Src, size_t size)
 		// LOG: Reading Failed
 		return;
 	}
-	VirtualSystemMemory::MemoryController::Write(Src, GetPhysicalPtr(), size);
+	VirtualMemorySystem::MemoryController::Write(Src, GetPhysicalPtr(), size);
 }
 
 // PageContainer

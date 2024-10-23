@@ -3,16 +3,16 @@
 #
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
-#   File Name     : VirtualSystemMemory.cpp
-#   Last Modified : 2024-10-22 22:11
+#   File Name     : VirtualMemorySystem.cpp
+#   Last Modified : 2024-10-23 20:38
 #   Describe      : 
 #
 # ====================================================*/
 
-#include "VirtualSystemMemory.h"
+#include "VirtualMemorySystem.h"
 #include <cstdint>
 
-namespace VirtualSystemMemory
+namespace VirtualMemorySystem
 {
 	char* pDefaultMemPool;
 	char* pMemory;
@@ -32,7 +32,7 @@ namespace VirtualSystemMemory
 // If you use default memory settings
 // Please Modify defines in "CommonHeaders.h" to Change RAM Settings
 // Please use init() to initialize MemoryController
-void VirtualSystemMemory::init()
+void VirtualMemorySystem::init()
 {
 	pDefaultMemPool = new char[TOTAL_MEMSIZE];
 	pMemory = pDefaultMemPool;
@@ -46,7 +46,7 @@ void VirtualSystemMemory::init()
 	DiskMemoryUsage.reset();
 }
 
-void VirtualSystemMemory::release()
+void VirtualMemorySystem::release()
 {
 	pMemory = nullptr;
 	pDiskMemory = nullptr;
@@ -54,7 +54,7 @@ void VirtualSystemMemory::release()
 	delete[] pSwapBuffer;
 }
 
-void VirtualSystemMemory::DiskWritingAnalog()
+void VirtualMemorySystem::DiskOperationAnalog()
 {
 #if defined(PLATFORM_LINUX)
 	usleep(5000);	// 5ms
@@ -67,23 +67,23 @@ void VirtualSystemMemory::DiskWritingAnalog()
 // 内存控制器代码实现
 //
 
-void VirtualSystemMemory::MemoryController::InitMC()
+void VirtualMemorySystem::MemoryController::InitMC()
 {
 }
 
-void VirtualSystemMemory::MemoryController::Read(char* pMemPtr_to, char* pMemPtr_Local, size_t Memsize)
+void VirtualMemorySystem::MemoryController::Read(char* pMemPtr_to, char* pMemPtr_Local, size_t Memsize)
 	// Local -- Memory In LocalMem
 {
 	std::memcpy(pMemPtr_to, pMemPtr_Local, Memsize);
 }
 
-void VirtualSystemMemory::MemoryController::Write(char* pMemPtr_from, char* pMemPtr_Local, size_t Memsize)
+void VirtualMemorySystem::MemoryController::Write(char* pMemPtr_from, char* pMemPtr_Local, size_t Memsize)
 	// Local -- Memory In LocalMem
 {
 	std::memcpy(pMemPtr_Local, pMemPtr_from, Memsize);
 }
 
-void VirtualSystemMemory::MemoryController::SwapBclks(char* pMemPtr_Local, char* pMemPtr_Disk)
+void VirtualMemorySystem::MemoryController::SwapBclks(char* pMemPtr_Local, char* pMemPtr_Disk)
 {
 	int16_t MemID_Local = (pMemPtr_Local-pMemory)>>8;
 	int16_t MemID_Disk = (pMemPtr_Disk-pDiskMemory)>>8;
@@ -105,7 +105,7 @@ void VirtualSystemMemory::MemoryController::SwapBclks(char* pMemPtr_Local, char*
 	}
 }
 
-void VirtualSystemMemory::MemoryController::SwapBclks(int16_t MemID_Local, int16_t MemID_Disk)
+void VirtualMemorySystem::MemoryController::SwapBclks(int16_t MemID_Local, int16_t MemID_Disk)
 {
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8);
 	char* pMemPtr_Disk = pDiskMemory + (MemID_Disk<<8);
@@ -127,9 +127,9 @@ void VirtualSystemMemory::MemoryController::SwapBclks(int16_t MemID_Local, int16
 	}
 }
 
-int16_t VirtualSystemMemory::MemoryController::AllocDisk()
+int16_t VirtualMemorySystem::MemoryController::AllocDisk()
 {
-	std :: bitset<(DISK_MEMORYSIZE >> 8)> ReverseBitset = ~ VirtualSystemMemory::DiskMemoryUsage;
+	std :: bitset<(DISK_MEMORYSIZE >> 8)> ReverseBitset = ~ VirtualMemorySystem::DiskMemoryUsage;
 	int16_t first_zero;
 
 #if defined(PLATFORM_LINUX)
@@ -141,34 +141,34 @@ int16_t VirtualSystemMemory::MemoryController::AllocDisk()
 	return -1;
 }
 
-void VirtualSystemMemory::MemoryController::deAllocDiskMem(int16_t MemID_Disk)
+void VirtualMemorySystem::MemoryController::deAllocDiskMem(int16_t MemID_Disk)
 {
-	if(! VirtualSystemMemory::DiskMemoryUsage[MemID_Disk])
+	if(! VirtualMemorySystem::DiskMemoryUsage[MemID_Disk])
 	{
 		return; // Not Occupied
 	}
 
-	VirtualSystemMemory::DiskMemoryUsage.reset(MemID_Disk);
-	std :: memset(VirtualSystemMemory::pDiskMemory+(MemID_Disk<<8),0,256);
+	VirtualMemorySystem::DiskMemoryUsage.reset(MemID_Disk);
+	std :: memset(VirtualMemorySystem::pDiskMemory+(MemID_Disk<<8),0,256);
 }
 
-void VirtualSystemMemory::MemoryController::deAllocLocalMem(int16_t MemID_Local)
+void VirtualMemorySystem::MemoryController::deAllocLocalMem(int16_t MemID_Local)
 {
-	if(! VirtualSystemMemory::LocalMemoryUsage[MemID_Local])
+	if(! VirtualMemorySystem::LocalMemoryUsage[MemID_Local])
 	{
 		return; // Not Occupied
 	}
 
-	VirtualSystemMemory::LocalMemoryUsage.reset(MemID_Local);
-	std :: memset(VirtualSystemMemory::pMemory+(MemID_Local<<8),0,256);
+	VirtualMemorySystem::LocalMemoryUsage.reset(MemID_Local);
+	std :: memset(VirtualMemorySystem::pMemory+(MemID_Local<<8),0,256);
 }
 
-char* VirtualSystemMemory::MemoryController::GetLocalPhysicalPtr(int16_t MemID_Local)
+char* VirtualMemorySystem::MemoryController::GetLocalPhysicalPtr(int16_t MemID_Local)
 {
 	return pMemory + (MemID_Local << 8);
 }
 
-char* VirtualSystemMemory::MemoryController::GetDiskPhysicalPtr(int16_t MemID_Disk)
+char* VirtualMemorySystem::MemoryController::GetDiskPhysicalPtr(int16_t MemID_Disk)
 {
 	return pMemory + (MemID_Disk << 8);
 }
