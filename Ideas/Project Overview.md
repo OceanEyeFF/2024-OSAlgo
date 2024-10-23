@@ -105,19 +105,33 @@ gantt
 	dateFormat YYYY-MM-DD
 
 	section 文档和思路
-	Ideas		: done		,	Not Pushing		,2024-10-15,5d
-	Documents	: active	,	Tempory Pushing	,2024-10-15,2024-10-23
-	Lab Report 	: 			,	Not Pushing		,2024-11-15,2d
+	内存端设计    : done				,2024-10-15,5d
+	接口端设计    : done				,2024-10-25,5d
+	文档杂项	: active	,2024-10-15,2024-10-23
+	Lab Report 	: 	,2024-11-15,2d
 
 	section 内存管理器代码
-	RAM			: active	,	descRAM			,2024-10-20,3d
-	Page		: active	,	descPage		,2024-10-20,3d
-	Container	: active	,	descContainer	,2024-10-21,2d
+	RAM			: active	,	descRAM			,2024-10-20,4d
+	Page		: active	,	descPage		,2024-10-20,4d
+	Container	: active	,	descContainer	,2024-10-21,5d
 	Algo		: active	,	descContainer	,2024-10-23,5d
-	RAM-doc		: active	,	descRAM			,2024-10-20,3d
-	Page-doc	: active	,	descPage		,2024-10-20,3d
-	Containerdoc: active	,	descContainer	,2024-10-21,2d
-	Algo-doc	: active	,	descContainer	,2024-10-23,5d
-
+	RAM-doc		: active			,2024-10-23,1d
+	Page-doc	: active			,2024-10-23,2d
+	Containerdoc: active			,2024-10-23,3d
+	Algo-doc	: active			,2024-10-23,5d
+	
+	section 内存管理器测试
+	内存管理器测试    : 		,2024-10-24,3d
+	封装接口测试    :			,2024-10-24,3d
+	
 	section 交互代码
+	占位符 : ,2024-11-01,1d
+	section 交互代码测试
+	占位符 : ,2024-11-01,1d
+
+	section 测试样例生成代码
+	占位符 : ,2024-11-01,1d
+	section 性能测试与比较
+	占位符 : ,2024-11-01,1d
+
 ```
