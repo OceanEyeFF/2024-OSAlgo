@@ -3,8 +3,8 @@
 
    Author        : OceanEyeFF
    Email         : fdch00@163.com
-   File Name     : Class Design.md
-   Last Modified : 2024-10-19 18:30
+   File Name     : Class Document.md
+   Last Modified : 2024-10-24 17:11
    Describe      : 
 
 --->
@@ -33,6 +33,8 @@ xx类和接口文档
 
 ### 类的父类，及其他继承关系
 
+### 类的继承关系
+
 class son: public Father1, private Father2 ...
 
 ${Father1 Document Link}
@@ -40,7 +42,13 @@ ${Father2 Document Link}
 
 ### 类的关联文档
 
-### 类用途和功能
+#### Father
+
+#### Son
+
+### 类用途和应用场景说明
+
+### 源代码
 
 ### 类的函数接口（样例）
 
