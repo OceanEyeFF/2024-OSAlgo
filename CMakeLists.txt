@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 PROJECT(2024-OS)
+
 MESSAGE(STATUS "PROJECT_BINARY_DIR= " ${PROJECT_BINARY_DIR})
 MESSAGE(STATUS "PROJECT_SOURCE_DIR= " ${PROJECT_SOURCE_DIR})
 
@@ -25,6 +26,5 @@ else()
 	message("current platform: unknown")
 
 endif()
-
 
 ADD_SUBDIRECTORY(source)

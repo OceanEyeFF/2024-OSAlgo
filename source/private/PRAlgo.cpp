@@ -4,12 +4,16 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgo.cpp
-#   Last Modified : 2024-10-24 12:40
+#   Last Modified : 2024-10-25 22:37
 #   Describe      : 
 #
 # ====================================================*/
 
 #include "PRAlgo.h"
+#include <iterator>
+#include <algorithm>
+#include <iostream>
+#include <queue>
 
 //		PRAlgoBase Begin
 //
@@ -49,11 +53,13 @@ void PRAlgoBase::LOGPrintPRCounter()
 void FIFO_Maintainer::init()
 {
 	PageQueue = std::queue<PageEntry*>{};
+	ResetPRCounter();
 }
 
 void FIFO_Maintainer::clear()
 {
 	PageQueue = std::queue<PageEntry*>{};
+	ResetPRCounter();
 }
 
 int16_t FIFO_Maintainer::size()
@@ -82,10 +88,57 @@ PageEntry* FIFO_Maintainer::GetReplacePagePtr()
 	return ret;
 }
 
-int8_t	FIFO_Maintainer::GetReplacePageID(PageEntry* PagePtrBegin)
+bool FIFO_Maintainer::RemoveReplacePagePtr()
 {
-	PageEntry *ret;
-	ret = PageQueue.front();
-	return ret-PagePtrBegin;
+	bool ret = false;
+	if(!PageQueue.empty())
+	{
+		ret = true;
+		PageQueue.pop();
+	}
+	else
+	{
+	}
+
+	return ret;
 }
+
+bool FIFO_Maintainer::RemovePagePtr(PageEntry* PagePtr)
+{
+	bool ret = false;
+	std :: queue<PageEntry*> TemporaryQueue;
+	for(PageEntry* Value;!PageQueue.empty();)
+	{
+		Value = PageQueue.front();
+		PageQueue.pop();
+		if(Value == PagePtr)
+		{
+			ret = true;
+			continue;
+		}
+		TemporaryQueue.push(Value);
+	}
+	PageQueue = TemporaryQueue;
+	return ret;
+
+}
+
+bool FIFO_Maintainer::CheckPagePtrExist(PageEntry *PagePtr)
+{
+	bool ret = false;
+	std :: queue<PageEntry*> TemporaryQueue;
+	for(PageEntry* Value;!PageQueue.empty();)
+	{
+		Value = PageQueue.front();
+		PageQueue.pop();
+		if(Value == PagePtr)
+		{
+			ret = true;
+		}
+		TemporaryQueue.push(Value);
+	}
+	PageQueue = TemporaryQueue;
+	return ret;
+}
+
 //		FIFO_Maintainer End

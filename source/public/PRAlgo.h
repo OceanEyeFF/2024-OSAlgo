@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgo.h
-#   Last Modified : 2024-10-24 09:24
+#   Last Modified : 2024-10-25 22:32
 #   Describe      : 
 #
 # ====================================================*/
@@ -14,18 +14,17 @@
 #ifndef  _PRALGO_H
 #define  _PRALGO_H
 
-#include "Page.h"
-#include <cstdint>
-#include <algorithm>
 #include <queue>
-#include <iostream>
+#include <cstdint>
+#include "Page.h"
+
+struct PageEntry;
 
 class PRAlgoBase
 {
 	private:
 		int PageReplacementCounter;
 		void increasePRCounter();
-
 		//DEBUG
 		void LOGPrintPRCounter();
 
@@ -39,20 +38,13 @@ class PRAlgoBase
 		virtual int16_t size();
 
 		virtual int16_t AddNewPagePtr(PageEntry* PagePtr);
-		virtual int16_t AddNewPageID(int8_t PageID);
 		virtual int16_t CurrentPageUniqueVar();
-		virtual PageEntry * GetReplacePagePtr();
-		virtual int8_t	GetReplacePageID(PageEntry* PagePtrBegin);
+		virtual PageEntry* GetReplacePagePtr();
 		virtual bool RemoveReplacePagePtr();
 		virtual bool RemovePagePtr(PageEntry* PagePtr);
 
 		//DEBUG
-		virtual PageEntry* CheckReplacePagePtr();
-		virtual void PrintReplacePageInfo();
-		virtual int8_t CheckReplacePageID();
 		virtual bool CheckPagePtrExist(PageEntry *PagePtr);
-
-		virtual void AlgoLOGPrint();
 };
 
 class FIFO_Maintainer : virtual public PRAlgoBase // To DO
@@ -66,11 +58,13 @@ class FIFO_Maintainer : virtual public PRAlgoBase // To DO
 		int16_t size();
 
 		int16_t AddNewPagePtr(PageEntry* PagePtr);
-		int16_t AddNewPageID(int8_t PageID);
 		int16_t CurrentPageUniqueVar();
 		PageEntry* GetReplacePagePtr();
-		int8_t	GetReplacePageID(PageEntry* PagePtrBegin);
+		bool RemoveReplacePagePtr();
 		bool RemovePagePtr(PageEntry* PagePtr);
+
+		//DEBUG
+		virtual bool CheckPagePtrExist(PageEntry *PagePtr);
 };
 
 #endif // _PRALGO_H

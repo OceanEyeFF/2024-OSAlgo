@@ -94,6 +94,7 @@
 2. 接口描述文档 Class Design Document/
 3. 代码注释文档 
 4. 文档编写规范文档 Project Develop Document/
+5. 第三方库文档 Third Party.md
 
 ### 工作日历(To do OE)
 

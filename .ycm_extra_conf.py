@@ -88,6 +88,8 @@ get_path( 'include' ),
 'cpp/ycm/benchmarks/benchmark/include',
 '-I',
 './source/public'
+'-I',
+'./source/thirdparty'
 '-std=c++20',
 ]
 

@@ -4,12 +4,16 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : Page.cpp
-#   Last Modified : 2024-10-23 17:31
+#   Last Modified : 2024-10-25 22:34
 #   Describe      : 
 #
 # ====================================================*/
 
 #include "Page.h"
+#include <cstring>
+#include <cstddef>
+#include "VirtualMemorySystem.h"
+#include "PRAlgo.h" // Ready : FIFO 
 
 EPageAlgoType EPageAlgo;
 
@@ -178,12 +182,31 @@ void PageEntry::Write(char* Src, size_t size)
 // private
 // To Do
 void PageContainer::ExecPageReplacementFunc(int8_t PageID)
-{}
+{
+//	PageEntry* ToReplace = PageReplacementUnit->GetReplacePagePtr();
+}
 
 // public
 PageContainer::PageContainer()
 {
 	std::memset(Pages,0,sizeof(Pages));
+	/*
+	switch(EPageAlgo)
+	{
+		case EPageAlgoType::eFIFO :
+			PageReplacementUnit = new FIFO_Maintainer;
+			break;
+		case EPageAlgoType::eLRU :
+//			PageReplacementUnit = new FIFO_Maintainer;
+			break;
+		case EPageAlgoType::eClock :
+//			PageReplacementUnit = new FIFO_Maintainer;
+			break;
+		case EPageAlgoType::eImprovedClock :
+//			PageReplacementUnit = new FIFO_Maintainer;
+			break;
+	}
+	*/
 //To Do
 //Set PageAlgo
 }

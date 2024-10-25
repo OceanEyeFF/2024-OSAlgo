@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : Page.h
-#   Last Modified : 2024-10-23 20:27
+#   Last Modified : 2024-10-25 22:41
 #   Describe      : 
 #
 # ====================================================*/
@@ -14,18 +14,15 @@
 #ifndef  _PAGE_H
 #define  _PAGE_H
 
-#include <functional>
-#include <cstring>
 #include <bitset>
 #include <cstdint>
-#include <cstring>
-#include <cstddef>
-
 #include "CommonHeaders.h"
-#include "VirtualMemorySystem.h"
+
+					// Not Ready : LRU/Clock
+					// Not Ready : Improved Clock
 
 // AddressConj
-// MemoryAddressConverter
+// Act as MemoryAddressConverter
 //
 struct AddressConj
 {
@@ -87,6 +84,7 @@ class PageContainer// 一级页表
 {
 	std :: bitset<32> PagesUsage;
 	PageEntry Pages[32];
+//	PRAlgoBase* PageReplacementUnit;
 
 	private:
 		// To Do
