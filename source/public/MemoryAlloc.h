@@ -3,20 +3,19 @@
 #
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
-#   File Name     : PRAlgo.h
-#   Last Modified : 2024-10-26 12:12
+#   File Name     : MemoryAlloc.h
+#   Last Modified : 2024-10-27 12:27
 #   Describe      : 
 #
 # ====================================================*/
 
-#pragma once
+#ifndef  _MEMORYALLOC_H
+#define  _MEMORYALLOC_H
 
-#ifndef  _PRALGO_H
-#define  _PRALGO_H
+#include "PageSystemGlobals.h"
+#include "PageContainer.h"
 
-#include "PRAlgoBase.h"
-#include "PRAlgoFIFO.h"
 
-#endif // _PRALGO_H
+#endif // _MEMORYALLOC_H
 	   //
 	   //

@@ -3,71 +3,40 @@
 #
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
-#   File Name     : PRAlgo.cpp
-#   Last Modified : 2024-10-25 22:37
+#   File Name     : PRAlgoFIFO.cpp
+#   Last Modified : 2024-10-29 22:16
 #   Describe      : 
 #
 # ====================================================*/
 
-#include "PRAlgo.h"
 #include <iterator>
 #include <algorithm>
 #include <iostream>
 #include <queue>
+#include "PRAlgoBase.h"
+#include "PRAlgoFIFO.h"
 
-//		PRAlgoBase Begin
-//
-//主要是缺页次数计数器相关的代码
 
-void PRAlgoBase::increasePRCounter()
-{
-	PageReplacementCounter++;
-}
-
-void PRAlgoBase::PrintPRCounter()
-{
-	std::cout <<  PRAlgoBase::PageReplacementCounter << std::endl;
-}
-
-int PRAlgoBase::GetPRCounter()
-{
-	return PageReplacementCounter;
-}
-
-void PRAlgoBase::ResetPRCounter()
-{
-	PageReplacementCounter = 0;
-}
-
-//DEBUG
-void PRAlgoBase::LOGPrintPRCounter()
-{
-	//std::cout <<  PRAlgoBase::PageReplacementCounter << std::endl;
-	//LOGPRINT
-}
-
-//		PRAlgoBase End
-
-//		FIFO_Maintainer Begin
+//		FIFO_PageSelector Begin
 //		Todo
-void FIFO_Maintainer::init()
+void FIFO_PageSelector::init()
 {
 	PageQueue = std::queue<PageEntry*>{};
 	ResetPRCounter();
 }
 
-void FIFO_Maintainer::clear()
+void FIFO_PageSelector::clear()
 {
 	PageQueue = std::queue<PageEntry*>{};
 	ResetPRCounter();
 }
 
-int16_t FIFO_Maintainer::size()
+int16_t FIFO_PageSelector::size()
 {
 	return PageQueue.size();
 }
 
-int16_t FIFO_Maintainer::AddNewPagePtr(PageEntry *PagePtr)
+int16_t FIFO_PageSelector::AddNewPagePtr(PageEntry *PagePtr)
 {
 	PagePtr->PageUniqueVariable = CurrentPageUniqueVar();
 	PageQueue.push(PagePtr);
@@ -76,19 +45,19 @@ int16_t FIFO_Maintainer::AddNewPagePtr(PageEntry *PagePtr)
 			 // 可能是当前管理的页面数量
 }
 
-int16_t FIFO_Maintainer::CurrentPageUniqueVar()
+int16_t FIFO_PageSelector::CurrentPageUniqueVar()
 {
 	return 0;
 }
 
-PageEntry* FIFO_Maintainer::GetReplacePagePtr()
+PageEntry* FIFO_PageSelector::GetReplacePagePtr()
 {
 	PageEntry *ret;
 	ret = PageQueue.front();
 	return ret;
 }
 
-bool FIFO_Maintainer::RemoveReplacePagePtr()
+bool FIFO_PageSelector::RemoveReplacePagePtr()
 {
 	bool ret = false;
 	if(!PageQueue.empty())
@@ -103,7 +72,7 @@ bool FIFO_Maintainer::RemoveReplacePagePtr()
 	return ret;
 }
 
-bool FIFO_Maintainer::RemovePagePtr(PageEntry* PagePtr)
+bool FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr)
 {
 	bool ret = false;
 	std :: queue<PageEntry*> TemporaryQueue;
@@ -123,7 +92,13 @@ bool FIFO_Maintainer::RemovePagePtr(PageEntry* PagePtr)
 
 }
 
-bool FIFO_Maintainer::CheckPagePtrExist(PageEntry *PagePtr)
+bool FIFO_PageSelector::CheckPageFull()
+{
+	return PageQueue.size() == BLCK_SIZE;
+}
+
+//DEBUG
+bool FIFO_PageSelector::CheckPagePtrExist(PageEntry *PagePtr)
 {
 	bool ret = false;
 	std :: queue<PageEntry*> TemporaryQueue;
@@ -141,4 +116,4 @@ bool FIFO_Maintainer::CheckPagePtrExist(PageEntry *PagePtr)
 	return ret;
 }
 
-//		FIFO_Maintainer End
+//		FIFO_PageSelector End

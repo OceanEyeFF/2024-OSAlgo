@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : VirtualMemorySystem.h
-#   Last Modified : 2024-10-23 20:49
+#   Last Modified : 2024-10-31 23:11
 #   Describe      : 
 #
 # ====================================================*/
@@ -21,7 +21,7 @@
 #include <cstring>
 #include <mutex>
 
-#include "CommonHeaders.h"
+#include "PageSystemGlobals.h"
 
 namespace VirtualMemorySystem
 {
@@ -47,20 +47,31 @@ namespace VirtualMemorySystem
 	class MemoryController
 	{
 		public:
+			static uint16_t AllocDiskMem();
+			static uint16_t AllocLocalMem();
+			static void deAllocDiskMem(uint16_t MemID_Disk);
+			static void deAllocLocalMem(uint16_t MemID_Local);
+
 			static void InitMC(); // Temporary Unused
-			static void Read(char* MemPtr_to, char* MemPtr_Local, size_t MemSize);
-			static void Write(char* MemPtr_from, char* MemPtr_Local, size_t MemSize);
-			static void SwapBclks(char* MemPtr_Local, char* MemPtr_Disk);
-			static void SwapBclks(int16_t MemID_Local, int16_t MemID_Disk);
+			static void Read(char* pMemPtr_to, uint16_t MemID_Local, size_t MemSize);
+			static void Write(char* pMemPtr_from, uint16_t MemID_Local, size_t MemSize);
+			static void SwapBclks(char* pMemPtr_Local, char* pMemPtr_Disk); // To be deprecated
+			static void SwapBclks(uint16_t MemID_Local, uint16_t MemID_Disk);
 
-			static int16_t AllocDisk();
-			static void deAllocDiskMem(int16_t MemID_Disk);
-			static void deAllocLocalMem(int16_t MemID_Local);
+			static void Read(char* pMemPtr_to, uint16_t MemID_Local,size_t shift, size_t MemSize);
+			static void Write(char* pMemPtr_from, uint16_t MemID_Local,size_t shift,  size_t MemSize);
 
-			static char* GetLocalPhysicalPtr(int16_t MemID_Local);
-			static char* GetDiskPhysicalPtr(int16_t MemID_Disk);
+			static uint16_t MoveToDiskMem(uint16_t MemID_Local);
+			static uint16_t MoveToLocalMem(uint16_t MemID_Disk);
+
+			static char* GetLocalPhysicalPtr(uint16_t MemID_Local);
+			static char* GetDiskPhysicalPtr(uint16_t MemID_Disk);
 			// To Do
 			// 代码说明文件
+			static uint16_t DiskMemCounter();
+			static uint16_t LocalMemCounter();
+			static bool DiskMemIsFull();
+			static bool LocalMemIsFull();
 	};
 }
 

@@ -46,15 +46,15 @@ database = None
 flags = [
 '-Wall',
 '-Wextra',
-'-Werror',
+#'-Werror',
 '-Wno-long-long',
 '-Wno-variadic-macros',
 '-fexceptions',
 '-DNDEBUG',
 # You 100% do NOT need -DUSE_CLANG_COMPLETER and/or -DYCM_EXPORT in your flags;
 # only the YCM source code needs it.
-'-DUSE_CLANG_COMPLETER',
-'-DYCM_EXPORT=',
+#'-DUSE_CLANG_COMPLETER',
+#'-DYCM_EXPORT=',
 '-DYCM_ABSEIL_SUPPORTED',
 # THIS IS IMPORTANT! Without the '-x' flag, Clang won't know which language to
 # use when compiling headers. So it will guess. Badly. So C++ headers will be
@@ -62,35 +62,13 @@ flags = [
 # For a C project, you would set this to 'c' instead of 'c++'.
 '-x',
 'c++',
-'-isystem',
-'cpp/absl',
-'-isystem',
-'cpp/pybind11',
-'-isystem',
-'cpp/whereami',
-'-isystem',
-'cpp/BoostParts',
-'-isystem',
-get_path( 'include' ),
-'-isystem',
-'cpp/llvm/include',
-'-isystem',
-'cpp/llvm/tools/clang/include',
-'-I',
-'cpp/ycm',
-'-I',
-'cpp/ycm/ClangCompleter',
-'-isystem',
-'cpp/ycm/tests/gmock/googlemock/include',
-'-isystem',
-'cpp/ycm/tests/gmock/googletest/include',
-'-isystem',
-'cpp/ycm/benchmarks/benchmark/include',
-'-I',
-'./source/public'
-'-I',
-'./source/thirdparty'
 '-std=c++20',
+'-I', './source/public' ,
+'-I', './source/thirdparty' ,
+'-isystem', r'F:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include',
+"-isystem", r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared',
+"-isystem", r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt',
+"-isystem", r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
