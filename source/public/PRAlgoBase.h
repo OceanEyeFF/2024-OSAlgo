@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.h
-#   Last Modified : 2024-10-31 22:55
+#   Last Modified : 2024-11-02 21:13
 #   Describe      : 
 #
 # ====================================================*/
@@ -50,6 +50,24 @@ class PRAlgoBase
 		//DEBUG
 		virtual bool CheckPagePtrExist(PageEntry *PagePtr);
 };
+
+enum class EPageAlgoType
+{
+	eFIFO,
+	eLRU,
+	eClock,
+	eImprovedClock
+};
+
+namespace PageReplacementAlgoGlobals
+{
+// PageAlgo Ptr
+// Initialize When Begin
+	extern PRAlgoBase* RuntimePageAlgo;
+// PageAlgo Flag
+	extern EPageAlgoType EPageAlgo;
+	void SetPageAlgo(EPageAlgoType EType=EPageAlgoType::eImprovedClock);
+}
 
 #endif // _PRALGOBASE_H
 	   //

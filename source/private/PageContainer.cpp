@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageContainer.cpp
-#   Last Modified : 2024-10-31 23:03
+#   Last Modified : 2024-11-02 21:07
 #   Describe      : 
 #
 # ====================================================*/
@@ -12,6 +12,7 @@
 #include <cstring>
 #include <cstddef>
 #include <cstdint>
+#include <string_view>
 #include "PageSystemGlobals.h"
 #include "PageEntry.h"
 #include "MyAlgo.hpp"
@@ -28,13 +29,13 @@ void PageContainer::HandlePageContainerMissingPage(int8_t PageID)
 {
 	// PCB* currentProcess = GetProcess();
 	// SaveCurrentProcessState();
-	if(PageReplacementUnit->CheckPageFull())
+	if(PageReplacementAlgoGlobals::RuntimePageAlgo->CheckPageFull())
 	{
-		PageReplacementUnit->SwapReplacedPagesAndSpecifiedPages(&Pages[PageID]);
+		PageReplacementAlgoGlobals::RuntimePageAlgo->SwapReplacedPagesAndSpecifiedPages(&Pages[PageID]);
 	}
 	else
 	{
-		PageReplacementUnit->PutPageInMem(&Pages[PageID]);
+		PageReplacementAlgoGlobals::RuntimePageAlgo->PutPageInMem(&Pages[PageID]);
 	}
 	// RestoreCurrentProcessState();
 	// ContinueProcess();
@@ -42,34 +43,17 @@ void PageContainer::HandlePageContainerMissingPage(int8_t PageID)
 
 // ToDo
 // Illegal Access Needs Report
-void PageContainer::HandlePageContainerIllegalAccess(int8_t PageID)
+void PageContainer::HandlePageContainerIllegalAccess(int8_t PageID, std::string_view IllegalMessage)
 {
 }
 
 // public
-// ToDo: PageReplacementUnit
+// ToDo: PageReplacementAlgoGlobals::RuntimePageAlgo
 PageContainer::PageContainer()
 {
 	std::memset(Pages,0,sizeof(Pages));
-//	PageReplacementUnit = new FIFO_PageSelector;
+//	PageReplacementAlgoGlobals::RuntimePageAlgo = new FIFO_PageSelector;
 	PagesUsage.reset();
-/*
-	switch(EPageAlgo)
-	{
-		case EPageAlgoType::eFIFO :
-			PageReplacementUnit = new FIFO_PageSelector;
-			break;
-		case EPageAlgoType::eLRU :
-//			PageReplacementUnit = new FIFO_PageSelector;
-			break;
-		case EPageAlgoType::eClock :
-//			PageReplacementUnit = new FIFO_PageSelector;
-			break;
-		case EPageAlgoType::eImprovedClock :
-//			PageReplacementUnit = new FIFO_PageSelector;
-			break;
-	}
-*/
 //To Do
 //Set PageAlgo
 }
@@ -77,34 +61,54 @@ PageContainer::PageContainer()
 int8_t PageContainer::AllocNewPage()
 {
 	if(PagesUsage.count()==64) return -1; // No Pages Slot
-	unsigned long tmp = PagesUsage.to_ulong();
-	unsigned int id = 0;
-	tmp = ~tmp;
-	
-	for(;!(tmp&1);tmp>>=1) ++id;
 
-	Pages[id].Alloc();
-	PagesUsage.set(id);
+	int8_t EmptyPosition = MyAlgo::ForBitset::FindFirstZero(PagesUsage);
+	PagesUsage.set(EmptyPosition);
+	Pages[EmptyPosition].Alloc();
 
-	return id;
+	return EmptyPosition;
 }
 
-void PageContainer::deAllocPage(int8_t PageID)
+bool PageContainer::AllocNewPage(AddressConj AddrConj)
 {
+	int8_t PageID = AddrConj.PageID;
+	if(PagesUsage[PageID])
+	{
+		HandlePageContainerIllegalAccess(PageID, "Alloc Illegal");
+		return false;		// PageAlreadyInUse
+	}
+
+	PagesUsage.set(PageID);
+	Pages[PageID].Alloc();
+
+	return true;
+}
+
+bool PageContainer::deAllocPage(AddressConj AddrConj)
+{
+	int8_t PageID = AddrConj.PageID;
 	if(!PagesUsage[PageID])
 	{
-		return;		// PageNotInUse
+		HandlePageContainerIllegalAccess(PageID, "deAlloc Illegal");
+		return false;		// PageNotInUse
+	}
+
+	if(Pages[PageID].isPresent())
+	{
+		PageReplacementAlgoGlobals::RuntimePageAlgo->RemovePagePtr(&Pages[PageID]);
+		Pages[PageID].resetPresent();
 	}
 
 	Pages[PageID].deAlloc();
 	PagesUsage.reset(PageID);
+	return true;
 }
 
 void PageContainer::Read(AddressConj AddrConj, char* Dst)
 {
 	if(!PagesUsage[AddrConj.PageID])
 	{
-		HandlePageContainerIllegalAccess(AddrConj.PageID);
+		HandlePageContainerIllegalAccess(AddrConj.PageID, "Read");
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
@@ -117,7 +121,7 @@ void PageContainer::Write(AddressConj AddrConj, char* Dst)
 {
 	if(!PagesUsage[AddrConj.PageID])
 	{
-		HandlePageContainerIllegalAccess(AddrConj.PageID);
+		HandlePageContainerIllegalAccess(AddrConj.PageID, "Write");
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
@@ -130,7 +134,7 @@ void PageContainer::Read(AddressConj AddrConj, char* Dst, size_t size)
 {
 	if(!PagesUsage[AddrConj.PageID])
 	{
-		HandlePageContainerIllegalAccess(AddrConj.PageID);
+		HandlePageContainerIllegalAccess(AddrConj.PageID, "Read");
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
@@ -143,7 +147,7 @@ void PageContainer::Write(AddressConj AddrConj, char* Dst, size_t size)
 {
 	if(!PagesUsage[AddrConj.PageID])
 	{
-		HandlePageContainerIllegalAccess(AddrConj.PageID);
+		HandlePageContainerIllegalAccess(AddrConj.PageID, "Write");
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
@@ -158,10 +162,11 @@ char* PageContainer::GetPhysicalPtr(AddressConj AddrConj)
 }
 
 // DEBUG
-void PageContainer::CheckPageEntryStatus(int8_t PageID) // Ranges(0,63) // ToDo
+void PageContainer::CheckPageEntryStatus(AddressConj AddrConj) // Ranges(0,63) // ToDo
 {
+	int8_t PageID = AddrConj.PageID;
 	bool PageUsage = PageContainer::PagesUsage[PageID];
 	bool PageInMem = Pages[PageID].isPresent();
-	bool PRAlgoStatus = PageReplacementUnit->CheckPagePtrExist(&Pages[PageID]);
+	bool PRAlgoStatus = PageReplacementAlgoGlobals::RuntimePageAlgo->CheckPagePtrExist(&Pages[PageID]);
 	// log print
 }

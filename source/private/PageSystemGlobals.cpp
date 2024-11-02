@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.cpp
-#   Last Modified : 2024-10-31 20:17
+#   Last Modified : 2024-11-02 20:55
 #   Describe      : 
 #
 # ====================================================*/
@@ -38,31 +38,3 @@ AddressPtr AddressConj::ToPtr()
 	ret.__ptr__= innerAddress << (SECPAGE_BITS + FSTPAGE_BITS) || PageID << (FSTPAGE_BITS)  || PageContainerID;
 	return ret;
 }
-
-EPageAlgoType EPageAlgo;
-
-// PageAlgo Flag
-void SetPageAlgo(int32_t Type)
-{
-	switch(Type)
-	{
-		case 0:
-			EPageAlgo = EPageAlgoType::eFIFO;
-			break;
-		case 1:
-			EPageAlgo = EPageAlgoType::eLRU;
-			break;
-		case 2:
-			EPageAlgo = EPageAlgoType::eClock;
-			break;
-		case 3:
-			EPageAlgo = EPageAlgoType::eImprovedClock;
-			break;
-	}
-}
-
-void SetPageAlgo(EPageAlgoType EType)
-{
-	EPageAlgo = EType;
-}
-

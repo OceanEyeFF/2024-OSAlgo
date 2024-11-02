@@ -4,14 +4,15 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.cpp
-#   Last Modified : 2024-10-31 22:56
+#   Last Modified : 2024-11-02 21:14
 #   Describe      : 
 #
 # ====================================================*/
 
+#include "PRAlgoBase.h"
 #include <cstdint>
 #include <iostream>
-#include "PRAlgoBase.h"
+#include "PRAlgo.h"
 #include "MyAlgo.hpp"
 #include "PageEntry.h"
 #include "VirtualMemorySystem.h"
@@ -151,3 +152,35 @@ void PRAlgoBase::LOGPrintPRCounter()
 }
 
 //		PRAlgoBase End
+//
+//		PRAlgoGlobals Begin
+
+namespace PageReplacementAlgoGlobals
+{
+// PageAlgo Ptr
+// Initialize When Begin
+	PRAlgoBase* RuntimePageAlgo = nullptr;
+// PageAlgo Flag
+	EPageAlgoType EPageAlgo;
+
+	void SetPageAlgo(EPageAlgoType EType)
+	{
+		EPageAlgo = EType;
+		switch(EPageAlgo)
+		{
+			case EPageAlgoType::eFIFO :
+				RuntimePageAlgo = new FIFO_PageSelector;
+				break;
+			case EPageAlgoType::eLRU :
+	//			RuntimePageAlgo = new FIFO_PageSelector;
+				break;
+			case EPageAlgoType::eClock :
+	//			RuntimePageAlgo = new FIFO_PageSelector;
+				break;
+			case EPageAlgoType::eImprovedClock :
+	//			RuntimePageAlgo = new FIFO_PageSelector;
+				break;
+		}
+	}
+}
+

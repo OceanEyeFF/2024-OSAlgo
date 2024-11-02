@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.h
-#   Last Modified : 2024-10-31 20:20
+#   Last Modified : 2024-11-02 21:08
 #   Describe      : 
 #
 # ====================================================*/
@@ -67,18 +67,6 @@ struct AddressConj
 	AddressConj(int8_t __PageContainerID, int8_t __PageID, int8_t __innerAddress);
 	AddressPtr ToPtr();
 };
-
-enum class EPageAlgoType
-{
-	eFIFO,
-	eLRU,
-	eClock,
-	eImprovedClock
-};
-
-extern EPageAlgoType EPageAlgo;
-extern void SetPageAlgo(int32_t type);
-extern void SetPageAlgo(EPageAlgoType type);
 
 #endif // _PAGESYSTEMGLOBALS_H
 	   //

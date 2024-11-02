@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : FstPageTable.cpp
-#   Last Modified : 2024-11-01 20:10
+#   Last Modified : 2024-11-02 20:45
 #   Describe      : 
 #
 # ====================================================*/
@@ -40,9 +40,14 @@ AddressConj FstPageTable::AllocNewPage()
 	return AddressConj(0xff,0xff,0xff);
 }
 
-void FstPageTable::deAllocPage(AddressConj AddrConj)
+bool FstPageTable::AllocNewPage(AddressConj AddrConj)
 {
-	Table[AddrConj.PageContainerID].deAllocPage(AddrConj.PageID);
+	return Table[AddrConj.PageContainerID].AllocNewPage(AddrConj);
+}
+
+bool FstPageTable::deAllocPage(AddressConj AddrConj)
+{
+	return Table[AddrConj.PageContainerID].deAllocPage(AddrConj);
 }
 
 void FstPageTable::Read(AddressConj AddrConj, char* Dst)
@@ -72,5 +77,5 @@ char* FstPageTable::GetPhysicalPtr(AddressConj AddrConj)
 //
 void FstPageTable::CheckPageEntryStatus(AddressConj AddrConj)
 {
-	Table[AddrConj.PageContainerID].CheckPageEntryStatus(AddrConj.PageID);
+	Table[AddrConj.PageContainerID].CheckPageEntryStatus(AddrConj);
 }

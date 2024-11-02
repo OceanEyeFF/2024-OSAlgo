@@ -4,18 +4,20 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageContainer.h
-#   Last Modified : 2024-10-31 23:00
+#   Last Modified : 2024-11-02 21:06
 #   Describe      : 
 #
 # ====================================================*/
 
 #pragma once
 
+#include "PRAlgoBase.h"
 #ifndef  _PAGECONTAINER_H
 #define  _PAGECONTAINER_H
 
 #include <bitset>
 #include <cstdint>
+#include <string_view>
 #include "VirtualMemorySystem.h"
 #include "PageSystemGlobals.h"
 #include "PageEntry.h"
@@ -26,9 +28,7 @@
 // void PageReplacementAlgo( std :: function<void(char*)> PRAfunc , char* MemPtr);
 // void FIFO(char* MemPtr);
 
-extern EPageAlgoType EPageAlgo;
-extern void SetPageAlgo(int32_t type);
-extern void SetPageAlgo(EPageAlgoType type);
+extern PRAlgoBase* PageReplacementAlgoGlobals::RuntimePageAlgo;
 
 class PageContainer// 一级页表
 				   // 144 Bytes
@@ -36,7 +36,9 @@ class PageContainer// 一级页表
 {
 	std :: bitset<64> PagesUsage;		// 8Byte
 	PageEntry Pages[64];				// 128Byte
-	PRAlgoBase* PageReplacementUnit;	// 8Byte
+//	PRAlgoBase* PageReplacementUnit;	// 8Byte Deprecated
+										// Replaced By Global Variable
+										// 实际指向全局PageReplacemenUnit
 										// 这一个字段在实际操作系统中是固定空间
 										// PageAlgo 的实现和空间占用在对应头文件和
 										// 代码注释文件中
@@ -44,14 +46,15 @@ class PageContainer// 一级页表
 	private:
 		// ToDo
 		void HandlePageContainerMissingPage(int8_t PageID);
-		void HandlePageContainerIllegalAccess(int8_t PageID); // ToDo
+		void HandlePageContainerIllegalAccess(int8_t PageID, std::string_view IllegalMessage); // ToDo
 		bool GetPageStatus();
 	public:
 		// ToDo
 		PageContainer();
 
 		int8_t AllocNewPage();
-		void deAllocPage(int8_t Page);
+		bool AllocNewPage(AddressConj AddrConj);
+		bool deAllocPage(AddressConj AddrConj);
 
 		void Read(AddressConj AddrConj, char* Dst);
 		void Write(AddressConj AddrConj, char* Src);
@@ -63,7 +66,7 @@ class PageContainer// 一级页表
 
 		// DEBUG
 		// ToDo
-		void CheckPageEntryStatus(int8_t PageID);
+		void CheckPageEntryStatus(AddressConj AddrConj);
 
 };
 
