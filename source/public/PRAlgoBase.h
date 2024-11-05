@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.h
-#   Last Modified : 2024-11-02 21:13
+#   Last Modified : 2024-11-03 11:24
 #   Describe      : 
 #
 # ====================================================*/
@@ -26,6 +26,12 @@ class PRAlgoBase
 		void LOGPrintPRCounter();
 		void LOGUsingDefaultFunc();
 
+		// Functions : Operate on Record Container, Limited Access
+		virtual int16_t AddNewPagePtr(PageEntry* PagePtr);// Operation Only Apply to Record Container
+		virtual PageEntry* GetReplacePagePtr();			// Operation Only Apply to Record Container
+		virtual bool RemoveReplacePagePtr();			// Operation Only Apply to Record Container
+		virtual bool RemovePagePtr(PageEntry* PagePtr);	// Operation Only Apply to Record Container
+														//
 	public:
 		int GetPRCounter();
 		void ResetPRCounter();
@@ -35,15 +41,13 @@ class PRAlgoBase
 		void PutPageInMem(PageEntry* PageIn);
 		void TakePageOutofMem(PageEntry* PageOut);
 
+		void HandleFuncDeAllocMem(PageEntry* deAllocPage);
+
 		virtual void init();
 		virtual void clear();
 		virtual int16_t size();
 
-		virtual int16_t AddNewPagePtr(PageEntry* PagePtr);
 		virtual int16_t CurrentPageUniqueVar();
-		virtual PageEntry* GetReplacePagePtr();
-		virtual bool RemoveReplacePagePtr();
-		virtual bool RemovePagePtr(PageEntry* PagePtr);
 
 		virtual bool CheckPageFull();
 

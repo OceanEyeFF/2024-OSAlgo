@@ -1,6 +1,19 @@
 PROJECT(MemoryControllerAndPRA)
 
 
+# 设置默认构建类型为 Release
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Default to Release build type" FORCE)
+endif()
+
+# 设置调试版本的编译参数
+# Visual Studio会在Release版本中添加-DNDEBUG的编译选项 
+# 作用是禁用assert断言
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
+
+# 设置发布版本的编译优化参数
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG") # 例如使用-O3进行优化
+
 # 根据系统指定编译参数
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 	message("for Linux : Generating Makefile")

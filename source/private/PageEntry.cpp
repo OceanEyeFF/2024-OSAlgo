@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageEntry.cpp
-#   Last Modified : 2024-10-31 23:10
+#   Last Modified : 2024-11-03 12:07
 #   Describe      : 
 #
 # ====================================================*/
@@ -48,7 +48,6 @@ void PageEntry::Alloc()
 	FrameNumber = VirtualMemorySystem::MemoryController::AllocDiskMem();
 
 	STATUS = 0;
-	PageEntry::setPresent();
 }
 
 void PageEntry::deAlloc()
@@ -69,7 +68,7 @@ void PageEntry::Read(char* Dst) // Read()函数只能访问内存，不能访问
 	if(!isPresent())
 	{
 		// LOG: LOG FROM PageEntry::Read()
-		// LOG: Reading from a BLCK whici not loaded in Memory
+		// LOG: Reading from a BLCK which not loaded in Memory
 		// LOG: Reading Failed
 		return;
 	}

@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : FstPageTable.cpp
-#   Last Modified : 2024-11-02 20:45
+#   Last Modified : 2024-11-05 11:24
 #   Describe      : 
 #
 # ====================================================*/
@@ -30,7 +30,7 @@ AddressConj FstPageTable::AllocNewPage()
 {
 	for(uint8_t i=0;i<4;++i)
 	{
-		uint8_t PageEntryID = Table[i].AllocNewPage();
+		int8_t PageEntryID = Table[i].AllocNewPage();
 		if(PageEntryID == -1)
 		{
 			continue;
@@ -73,8 +73,7 @@ char* FstPageTable::GetPhysicalPtr(AddressConj AddrConj)
 	return Table[AddrConj.PageContainerID].GetPhysicalPtr(AddrConj);
 }
 
-//DEBUG
-//
+// DEBUG
 void FstPageTable::CheckPageEntryStatus(AddressConj AddrConj)
 {
 	Table[AddrConj.PageContainerID].CheckPageEntryStatus(AddrConj);

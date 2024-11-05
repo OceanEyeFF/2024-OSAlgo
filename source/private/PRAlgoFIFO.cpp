@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoFIFO.cpp
-#   Last Modified : 2024-10-29 22:16
+#   Last Modified : 2024-11-05 13:07
 #   Describe      : 
 #
 # ====================================================*/
@@ -94,7 +94,7 @@ bool FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr)
 
 bool FIFO_PageSelector::CheckPageFull()
 {
-	return PageQueue.size() == BLCK_SIZE;
+	return PageQueue.size() == BLCK_CNT;
 }
 
 //DEBUG

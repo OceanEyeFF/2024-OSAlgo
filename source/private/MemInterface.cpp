@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : MemInterface.cpp
-#   Last Modified : 2024-11-02 20:47
+#   Last Modified : 2024-11-05 21:26
 #   Describe      : 
 #
 # ====================================================*/
@@ -48,4 +48,9 @@ void PCB_MemInterface::Read(char* Dst, AddressPtr AddrPtr, size_t size)
 void PCB_MemInterface::Write(char* Src, AddressPtr AddrPtr, size_t size)
 {
 	FirstPageTable.Write(AddressConj(AddrPtr), Src, size);
+}
+
+char* PCB_MemInterface::GetPhysicalPtr(AddressPtr AddrPtr)
+{
+	return FirstPageTable.GetPhysicalPtr(AddressConj(AddrPtr));
 }

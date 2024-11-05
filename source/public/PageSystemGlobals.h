@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.h
-#   Last Modified : 2024-11-02 21:08
+#   Last Modified : 2024-11-05 21:03
 #   Describe      : 
 #
 # ====================================================*/
@@ -32,21 +32,30 @@
 #define	PAGE_PER_CONTAINER	64
 #define CONTAINER_SIZE		4
 
-#define BLCK_BITS			8
-#define SECPAGE_BITS		6
 #define FSTPAGE_BITS		2
+#define SECPAGE_BITS		6
+#define BLCK_BITS			8
+#define THIRDLEVEL_BITS		8
 
-#define THIRD_LEVEL_MASK	511
-#define SECOND_LEVEL_MASK	127
 #define FIRST_LEVEL_MASK	3
+#define SECOND_LEVEL_MASK	63
+#define THIRD_LEVEL_MASK	255
 
 #define FIRST_LEVEL_SHIFT	14
 #define SECOND_LEVEL_SHIFT	8
 #define THIRD_LEVEL_SHIFT	0
 
+/* Address has 16bits
+ * 0000000000000000
+ * 1122222233333333
+ * 1 : FstPage FirstPage
+ * 2 : PageContainer SecondPage
+ * 3 : innerBlockID
+ */
+
 struct AddressPtr
 {
-	int16_t __ptr__;
+	uint16_t __ptr__;
 };
 
 // AddressConj
@@ -54,9 +63,9 @@ struct AddressPtr
 //
 struct AddressConj
 {
-	uint8_t innerAddress;
-	uint8_t PageID;
-	uint8_t PageContainerID;
+	int8_t innerAddress;
+	int8_t PageID;
+	int8_t PageContainerID;
 
 #define FIRSTLEVELID		PageContainerID
 #define SECONDLEVELID		PageID

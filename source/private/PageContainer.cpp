@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageContainer.cpp
-#   Last Modified : 2024-11-02 21:07
+#   Last Modified : 2024-11-05 11:42
 #   Describe      : 
 #
 # ====================================================*/
@@ -29,6 +29,12 @@ void PageContainer::HandlePageContainerMissingPage(int8_t PageID)
 {
 	// PCB* currentProcess = GetProcess();
 	// SaveCurrentProcessState();
+
+#ifdef DEBUG
+	std :: cout << "Missing Page Happend:" << std::endl;
+	std :: cout << "* PageID\t, Try PeplacedPage " << std::endl;
+	std :: cout << "* " << (int)PageID << "\t\t, " << std :: endl;
+#endif
 	if(PageReplacementAlgoGlobals::RuntimePageAlgo->CheckPageFull())
 	{
 		PageReplacementAlgoGlobals::RuntimePageAlgo->SwapReplacedPagesAndSpecifiedPages(&Pages[PageID]);
@@ -45,6 +51,11 @@ void PageContainer::HandlePageContainerMissingPage(int8_t PageID)
 // Illegal Access Needs Report
 void PageContainer::HandlePageContainerIllegalAccess(int8_t PageID, std::string_view IllegalMessage)
 {
+#ifdef DEBUG
+	std :: cout << "IllegalAccess Happend:" << std::endl;
+	std :: cout << "* PageID\t, IllegalMessage" << std::endl;
+	std :: cout << "* " << (int)PageID << "\t\t, " << IllegalMessage << std :: endl;
+#endif
 }
 
 // public
@@ -52,10 +63,7 @@ void PageContainer::HandlePageContainerIllegalAccess(int8_t PageID, std::string_
 PageContainer::PageContainer()
 {
 	std::memset(Pages,0,sizeof(Pages));
-//	PageReplacementAlgoGlobals::RuntimePageAlgo = new FIFO_PageSelector;
 	PagesUsage.reset();
-//To Do
-//Set PageAlgo
 }
 
 int8_t PageContainer::AllocNewPage()
@@ -95,8 +103,7 @@ bool PageContainer::deAllocPage(AddressConj AddrConj)
 
 	if(Pages[PageID].isPresent())
 	{
-		PageReplacementAlgoGlobals::RuntimePageAlgo->RemovePagePtr(&Pages[PageID]);
-		Pages[PageID].resetPresent();
+		PageReplacementAlgoGlobals::RuntimePageAlgo->HandleFuncDeAllocMem(&Pages[PageID]);
 	}
 
 	Pages[PageID].deAlloc();
@@ -109,6 +116,7 @@ void PageContainer::Read(AddressConj AddrConj, char* Dst)
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Read");
+		return;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
@@ -122,6 +130,7 @@ void PageContainer::Write(AddressConj AddrConj, char* Dst)
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Write");
+		return;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
@@ -135,6 +144,7 @@ void PageContainer::Read(AddressConj AddrConj, char* Dst, size_t size)
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Read");
+		return;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
@@ -148,6 +158,7 @@ void PageContainer::Write(AddressConj AddrConj, char* Dst, size_t size)
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Write");
+		return;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{

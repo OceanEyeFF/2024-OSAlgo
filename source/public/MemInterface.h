@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : MemInterface.h
-#   Last Modified : 2024-11-02 20:53
+#   Last Modified : 2024-11-05 21:27
 #   Describe      : 
 #
 # ====================================================*/
@@ -39,6 +39,8 @@ class PCB_MemInterface
 
 		void Read(char* Dst, AddressPtr AddrPtr, size_t size);
 		void Write(char* Src, AddressPtr AddrPtr, size_t size);
+
+		char* GetPhysicalPtr(AddressPtr AddrPtr);
 
 		void MoveIntoMem();
 		void MoveOutofMem();

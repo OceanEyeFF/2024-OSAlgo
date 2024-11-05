@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : VirtualMemorySystem.cpp
-#   Last Modified : 2024-10-31 23:14
+#   Last Modified : 2024-11-04 20:13
 #   Describe      : 
 #
 # ====================================================*/
@@ -86,8 +86,8 @@ uint16_t VirtualMemorySystem::MemoryController::AllocLocalMem()
 #endif
 
 	std :: memset(VirtualMemorySystem::pMemory+(first_zero<<8),0,256);
+	LocalMemoryUsage.set(first_zero);
 	return first_zero;
-	return -1;
 }
 
 uint16_t VirtualMemorySystem::MemoryController::AllocDiskMem()
@@ -108,28 +108,18 @@ uint16_t VirtualMemorySystem::MemoryController::AllocDiskMem()
 #endif
 
 	std :: memset(VirtualMemorySystem::pDiskMemory+(first_zero<<8),0,256);
+	DiskMemoryUsage.set(first_zero);
 	return first_zero;
-	return -1;
 }
 
 void VirtualMemorySystem::MemoryController::deAllocDiskMem(uint16_t MemID_Disk)
 {
-	if(! VirtualMemorySystem::DiskMemoryUsage[MemID_Disk])
-	{
-		return; // Not Occupied
-	}
-
 	VirtualMemorySystem::DiskMemoryUsage.reset(MemID_Disk);
 	std :: memset(VirtualMemorySystem::pDiskMemory+(MemID_Disk<<8),0,256);
 }
 
 void VirtualMemorySystem::MemoryController::deAllocLocalMem(uint16_t MemID_Local)
 {
-	if(! VirtualMemorySystem::LocalMemoryUsage[MemID_Local])
-	{
-		return; // Not Occupied
-	}
-
 	VirtualMemorySystem::LocalMemoryUsage.reset(MemID_Local);
 	std :: memset(VirtualMemorySystem::pMemory+(MemID_Local<<8),0,256);
 }
@@ -190,7 +180,7 @@ void VirtualMemorySystem::MemoryController::SwapBclks(uint16_t MemID_Local, uint
 	}
 	*/
 
-	// if simulate hardware operation
+	// simulate hardware operation
 	// copy to swapbuffer
 	std :: memcpy(VirtualMemorySystem::pSwapBuffer,pMemPtr_Local,BLCK_SIZE);
 	std :: memcpy(VirtualMemorySystem::pSwapBuffer+BLCK_SIZE,pMemPtr_Disk,BLCK_SIZE);
@@ -200,6 +190,7 @@ void VirtualMemorySystem::MemoryController::SwapBclks(uint16_t MemID_Local, uint
 }
 
 uint16_t VirtualMemorySystem::MemoryController::MoveToDiskMem(uint16_t MemID_Local)
+	// 从内存移动到磁盘
 {
 	if(VirtualMemorySystem::DiskMemoryUsage.count() == (DISK_MEMORYSIZE>>8) )
 	{
@@ -211,21 +202,28 @@ uint16_t VirtualMemorySystem::MemoryController::MoveToDiskMem(uint16_t MemID_Loc
 
 	std :: memcpy(pMemPtr_Disk, pMemPtr_Local, BLCK_SIZE);
 	std :: memset(pMemPtr_Local, 0,BLCK_SIZE);
+
+	LocalMemoryUsage.reset(MemID_Local);
+
 	return MemID_Disk;
 }
 
 uint16_t VirtualMemorySystem::MemoryController::MoveToLocalMem(uint16_t MemID_Disk)
+	// 从缓存移动到内存
 {
 	if(VirtualMemorySystem::LocalMemoryUsage.count() == (LOCAL_MEMORYSIZE>>8) )
 	{
 		return 0xffff;
 	}
-	uint16_t MemID_Local=AllocDiskMem();
+	uint16_t MemID_Local=AllocLocalMem();
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8);
 	char* pMemPtr_Disk = pDiskMemory + (MemID_Disk<<8);
 
 	std :: memcpy(pMemPtr_Local, pMemPtr_Disk,BLCK_SIZE);
 	std :: memset(pMemPtr_Disk, 0,BLCK_SIZE);
+
+	DiskMemoryUsage.reset(MemID_Disk);
+
 	return MemID_Local;
 }
 

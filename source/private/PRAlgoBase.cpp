@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.cpp
-#   Last Modified : 2024-11-02 21:14
+#   Last Modified : 2024-11-03 11:45
 #   Describe      : 
 #
 # ====================================================*/
@@ -22,24 +22,25 @@
 //
 //主要是缺页次数计数器相关的代码
 
+// Private
 void PRAlgoBase::increasePRCounter()
 {
 	PageReplacementCounter++;
 }
 
+void PRAlgoBase::LOGUsingDefaultFunc()
+{
+	//CLOG(ERROR, "class PRAlgo") << "PRAlgoBase virtual function called";
+}
+
+//Public
 int PRAlgoBase::GetPRCounter()
 {
 	return PageReplacementCounter;
 }
-
 void PRAlgoBase::ResetPRCounter()
 {
 	PageReplacementCounter = 0;
-}
-
-void PRAlgoBase::LOGUsingDefaultFunc()
-{
-	//CLOG(ERROR, "class PRAlgo") << "PRAlgoBase virtual function called";
 }
 
 void PRAlgoBase::SwapPages(PageEntry* PageMoveToMem, PageEntry* PageMoveOutofMem)
@@ -85,7 +86,35 @@ void PRAlgoBase::TakePageOutofMem(PageEntry* PageOut)
 	RemovePagePtr(PageOut);
 }
 
+void PRAlgoBase::HandleFuncDeAllocMem(PageEntry* deAllocPage)
+{
+	RemovePagePtr(deAllocPage);
+}
+
 // virtual function
+// Private Virtual
+int16_t PRAlgoBase::AddNewPagePtr(PageEntry* PagePtr)
+{
+	LOGUsingDefaultFunc();
+	return 0;
+}
+PageEntry* PRAlgoBase::GetReplacePagePtr()
+{
+	LOGUsingDefaultFunc();
+	return nullptr;
+}
+bool PRAlgoBase::RemoveReplacePagePtr()
+{
+	LOGUsingDefaultFunc();
+	return false;
+}
+bool PRAlgoBase::RemovePagePtr(PageEntry* PagePtr)
+{
+	LOGUsingDefaultFunc();
+	return false;
+}
+
+// Public Virtual
 void PRAlgoBase::init()
 {
 	// Init ReplacementCounter
@@ -105,31 +134,10 @@ int16_t PRAlgoBase::size()
 	LOGUsingDefaultFunc();
 	return 0;
 }
-
-int16_t PRAlgoBase::AddNewPagePtr(PageEntry* PagePtr)
-{
-	LOGUsingDefaultFunc();
-	return 0;
-}
 int16_t PRAlgoBase::CurrentPageUniqueVar()
 {
 	LOGUsingDefaultFunc();
 	return 0;
-}
-PageEntry* PRAlgoBase::GetReplacePagePtr()
-{
-	LOGUsingDefaultFunc();
-	return nullptr;
-}
-bool PRAlgoBase::RemoveReplacePagePtr()
-{
-	LOGUsingDefaultFunc();
-	return false;
-}
-bool PRAlgoBase::RemovePagePtr(PageEntry* PagePtr)
-{
-	LOGUsingDefaultFunc();
-	return false;
 }
 
 bool PRAlgoBase::CheckPageFull()

@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageEntry.h
-#   Last Modified : 2024-11-01 11:43
+#   Last Modified : 2024-11-03 11:10
 #   Describe      : 
 #
 # ====================================================*/
@@ -52,10 +52,13 @@ struct PageEntry
 		STATUS|=(ispresent?PRESENTBITS:0);
 	}
 
-	void resetAll(); // ToDo
-	bool isPresent();
-	void setPresent();
-	void resetPresent();
+	void resetAll();		// 重置所有状态到未开辟
+
+
+	bool isPresent();		// 查询是否在内存中
+							// 以下函数由PRAlgo调用访问
+	void setPresent();		// 设置状态为在内存中
+	void resetPresent();	// 设置状态为不在内存中
 
 	void Alloc();
 	void deAlloc();

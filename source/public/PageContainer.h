@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageContainer.h
-#   Last Modified : 2024-11-02 21:06
+#   Last Modified : 2024-11-03 11:07
 #   Describe      : 
 #
 # ====================================================*/
@@ -35,6 +35,8 @@ class PageContainer// 一级页表
 				   //
 {
 	std :: bitset<64> PagesUsage;		// 8Byte
+										// 表示页面是否已经开辟
+										// 如果已经开辟则可以进行操作（从磁盘移入内存等）
 	PageEntry Pages[64];				// 128Byte
 //	PRAlgoBase* PageReplacementUnit;	// 8Byte Deprecated
 										// Replaced By Global Variable
@@ -44,7 +46,6 @@ class PageContainer// 一级页表
 										// 代码注释文件中
 
 	private:
-		// ToDo
 		void HandlePageContainerMissingPage(int8_t PageID);
 		void HandlePageContainerIllegalAccess(int8_t PageID, std::string_view IllegalMessage); // ToDo
 		bool GetPageStatus();
