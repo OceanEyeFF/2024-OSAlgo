@@ -4,23 +4,25 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : main.cpp
-#   Last Modified : 2024-11-05 21:42
+#   Last Modified : 2024-11-07 16:37
 #   Describe      : 
 #
 # ====================================================*/
-
 #include <cstdint>
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <thread>
 #include <mutex>
-#include <coroutine>
 #include "PRAlgo.h"
 #include "PRAlgoBase.h"
 #include "PageSystemGlobals.h"
 #include "MemInterface.h"
 #include "VirtualMemorySystem.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include "libgo/coroutine.h"
+#include "easylogging++.h"
 
 void RunTest()
 	// 测试标准：
@@ -177,11 +179,20 @@ void RunTest()
 	}
 }
 
+INITIALIZE_EASYLOGGINGPP
 int main()
 {
 	std::cout << "Hello World" << std::endl;
 
 	// Easy Logging plusplus Settings
+#if defined(DEBUG)
+	el::Configurations conf("../ConfigFile/easyLogging++/debug.conf");
+	el::Loggers::reconfigureAllLoggers(conf);
+#elif defined(RELEASE)
+	el::Configurations conf("../ConfigFile/easyLogging++/release.conf");
+	el::Loggers::reconfigureAllLoggers(conf);
+#endif
+
 
 	// MemorySystem Settings
 	VirtualMemorySystem::init();

@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.h
-#   Last Modified : 2024-11-05 21:03
+#   Last Modified : 2024-11-07 11:40
 #   Describe      : 
 #
 # ====================================================*/
@@ -15,14 +15,6 @@
 #define  _PAGESYSTEMGLOBALS_H
 
 #include <cstdint>
-
-#if defined(PLATFORM_LINUX)
-#include <unistd.h>
-
-#elif defined(PLATFORM_WIN)
-#include <Windows.h>
-
-#endif
 
 #define TOTAL_MEMSIZE		327680
 #define LOCAL_MEMORYSIZE	65536

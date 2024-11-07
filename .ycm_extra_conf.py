@@ -65,6 +65,7 @@ flags = [
 '-std=c++20',
 '-I', './source/public' ,
 '-I', './source/thirdparty' ,
+'-I', './source/thirdparty/libgo' ,
 '-isystem', r'F:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include',
 "-isystem", r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared',
 "-isystem", r'C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt',

@@ -4,11 +4,13 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : VirtualMemorySystem.cpp
-#   Last Modified : 2024-11-04 20:13
+#   Last Modified : 2024-11-07 11:39
 #   Describe      : 
 #
 # ====================================================*/
 
+#include <thread>
+#include <chrono>
 #include <cstring>
 #include <cstdint>
 #include "VirtualMemorySystem.h"
@@ -58,11 +60,7 @@ void VirtualMemorySystem::release()
 
 void VirtualMemorySystem::DiskOperationAnalog()
 {
-#if defined(PLATFORM_LINUX)
-	usleep(5000);	// 5ms
-#elif defined(PLATFORM_WIN)
-	Sleep(5);		// 5ms
-#endif
+	std::this_thread::sleep_for(std::chrono::microseconds(5));
 }
 
 // MemController
