@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : main.cpp
-#   Last Modified : 2024-11-07 16:37
+#   Last Modified : 2024-11-16 12:19
 #   Describe      : 
 #
 # ====================================================*/
@@ -20,7 +20,6 @@
 #include "MemInterface.h"
 #include "VirtualMemorySystem.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include "libgo/coroutine.h"
 #include "easylogging++.h"
 
@@ -179,33 +178,64 @@ void RunTest()
 	}
 }
 
+void TestResult()
+{
+	std :: cout << PageReplacementAlgoGlobals::RuntimePageAlgo->GetPRCounter() << "\n";
+}
+
 INITIALIZE_EASYLOGGINGPP
 int main()
 {
 	std::cout << "Hello World" << std::endl;
 
 	// Easy Logging plusplus Settings
-#if defined(DEBUG)
-	el::Configurations conf("../ConfigFile/easyLogging++/debug.conf");
+#ifdef _DEBUG
+	el::Configurations conf("./ConfigFile/easyLogging++/debug.conf");
+//	el::Configurations conf("./ConfigFile/easyLogging++/release.conf"); 
+//	if Test release config use the line above
 	el::Loggers::reconfigureAllLoggers(conf);
-#elif defined(RELEASE)
-	el::Configurations conf("../ConfigFile/easyLogging++/release.conf");
+	el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
+	el::Loggers::setVerboseLevel(0);
+#endif
+
+#if _RELEASE
+	el::Configurations conf("./ConfigFile/easyLogging++/release.conf");
 	el::Loggers::reconfigureAllLoggers(conf);
+	el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
+//	el::Loggers::setVerboseLevel(0);
 #endif
 
 
 	// MemorySystem Settings
 	VirtualMemorySystem::init();
+	SystemTracker::RegistMessageBus();
 	PageReplacementAlgoGlobals::SetPageAlgo(EPageAlgoType::eFIFO);
+	//PageReplacementAlgoGlobals::SetPageAlgo(EPageAlgoType::eLRU);
 
+	// LogTest
+	VLOG(0) << "This is a verbose message";
+	VLOG(0) << "Verbose Message:	Runtime Function Stack, to locate assert code file and function";
+	LOG(DEBUG) << "This is a debug message";
+	LOG(INFO) << "This is an info message";
+	LOG(WARNING) << "This is a warning message";
+	LOG(ERROR) << "This is an error message";
+	LOG(INFO) << "Debug Message:	Notify debugger some funcions was excuted";
+	LOG(INFO) << "					or middle value which is important";
+	LOG(INFO) << "Info Message:		Info showing program's general running status.";
+	LOG(INFO) << "This is an info message";
+#ifdef _DEBUG
 	// RunTest
-
 	RunTest();
 	// TestResult
+	TestResult();
 
+#endif
+
+#ifdef _RELEASE
 	// RunTask
 	
 	// TaskResults
+#endif
 
 	return 0;
 }

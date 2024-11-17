@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.h
-#   Last Modified : 2024-11-03 11:24
+#   Last Modified : 2024-11-11 22:33
 #   Describe      : 
 #
 # ====================================================*/
@@ -46,6 +46,9 @@ class PRAlgoBase
 		virtual void init();
 		virtual void clear();
 		virtual int16_t size();
+
+		virtual void NotifyVisitingPages(PageEntry* PagePtr);
+		// use MessageBus To Call
 
 		virtual int16_t CurrentPageUniqueVar();
 

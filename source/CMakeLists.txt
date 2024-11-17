@@ -1,15 +1,14 @@
 PROJECT(MemControllerAndPageRepSystem)
 
-# 设置构建类型
-if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-	message(STATUS "Configuring Main for DEBUG")
-	#    add_compile_definitions(_DEBUG)
-	#    target_compile_options(ClientExecutable PRIVATE -g)
-elseif(CMAKE_BUILD_TYPE STREQUAL "RELEASE")
-	message(STATUS "Configuring Main for RELEASE")
-	#    add_compile_definitions(_RELEASE)
-	#    target_compile_options(ClientExecutable PRIVATE -O3)
-endif()
+# Below deprecated
+# 设置调试版本的编译参数
+# Visual Studio会在Release版本中添加-DNDEBUG的编译选项 
+# 作用是禁用assert断言
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
+# 设置发布版本的编译优化参数
+# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DRELEASE") # 例如使用-O3进行优化
+
+
 
 # 根据系统指定编译参数
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
@@ -28,8 +27,11 @@ endif()
 # 添加 Libgo 作为子目录
 add_subdirectory(thirdparty/libgo)
 # easylogging 配置
-# 添加 Libgo 作为子目录
+# 添加 easylogging++ 作为子目录
 add_subdirectory(thirdparty/easylogging++)
+# 添加 messagebus
+add_subdirectory(thirdparty/messagebus)
+# file(GLOB MESSAGEBUS thirdparty/libgo/messagebus/MessageBus.hpp)
 
 # C++ 标准设置为C++20
 set(CMAKE_CXX_STANDARD 20)
@@ -40,24 +42,41 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 第三方文件分类存放到THIRD_PARTY_HEADERS,THIRD_PARTY_SOURCES
 file(GLOB PUBLIC_HEADERS public/*.h public/*.hpp)
 file(GLOB PRIVATE_SOURCES private/*.cpp)
-file(GLOB LIBGO_HEADERS thirdparty/libgo/libgo/*.h)
-
-message(${LIBGO_HEADERS})
+# file(GLOB LIBGO_HEADERS thirdparty/libgo/libgo/*.h)
+# message(${LIBGO_HEADERS})
 
 # 添加可执行文件
-add_executable(Main PRIVATE main.cpp ${PRIVATE_SOURCES} ${PUBLIC_HEADERS} )
+add_executable(Main PRIVATE main.cpp ${PRIVATE_SOURCES} ${PUBLIC_HEADERS} ${MESSAGEBUS} )
+
+# 根据构建类型设置编译参数
+if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+	message(STATUS "Configuring Main for DEBUG")
+	add_compile_definitions(_DEBUG)
+	if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+		target_compile_options(Main PRIVATE -g)
+	endif()
+elseif(CMAKE_BUILD_TYPE STREQUAL "RELEASE")
+	message(STATUS "Configuring Main for RELEASE")
+	add_compile_definitions(_RELEASE)
+	target_compile_options(Main PRIVATE -O3)
+endif()
+
+# 针对MSVC取消4819warnings
+set_global_compile_options(Main)
+
 # 添加主程序头文件目录
 target_include_directories(Main PUBLIC public)
+target_include_directories(Main PRIVATE thirdparty/messagebus)
 
-target_include_directories(Main PRIVATE thirdparty/libgo)
-if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-	message("LIBGO : Configure for Linux")
-elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-	message("LIBGO : Configue for Windows Visual Studio Solution")
-	target_include_directories(Main PRIVATE thirdparty/libgo/lingo/netio/windows)
-endif()
+# target_include_directories(Main PRIVATE thirdparty/libgo)
+# if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+#	message("LIBGO : Configure for Linux")
+#elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+#	message("LIBGO : Configue for Windows Visual Studio Solution")
+#	target_include_directories(Main PRIVATE thirdparty/libgo/lingo/netio/windows)
+#endif()
 
 
 # 链接第三方库
-target_link_libraries(Main PRIVATE easylogging++ libgo_static)
+target_link_libraries(Main PRIVATE easylogging++ libgo_static messagebus)
 

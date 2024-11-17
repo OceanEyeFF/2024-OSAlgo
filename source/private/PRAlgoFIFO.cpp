@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoFIFO.cpp
-#   Last Modified : 2024-11-05 13:07
+#   Last Modified : 2024-11-16 11:04
 #   Describe      : 
 #
 # ====================================================*/
@@ -14,28 +14,12 @@
 #include <iostream>
 #include <queue>
 #include "PRAlgoBase.h"
+#include "PageEntry.h"
 #include "PRAlgoFIFO.h"
 
 
 //		FIFO_PageSelector Begin
-//		Todo
-void FIFO_PageSelector::init()
-{
-	PageQueue = std::queue<PageEntry*>{};
-	ResetPRCounter();
-}
-
-void FIFO_PageSelector::clear()
-{
-	PageQueue = std::queue<PageEntry*>{};
-	ResetPRCounter();
-}
-
-int16_t FIFO_PageSelector::size()
-{
-	return PageQueue.size();
-}
-
+// private
 int16_t FIFO_PageSelector::AddNewPagePtr(PageEntry *PagePtr)
 {
 	PagePtr->PageUniqueVariable = CurrentPageUniqueVar();
@@ -45,16 +29,9 @@ int16_t FIFO_PageSelector::AddNewPagePtr(PageEntry *PagePtr)
 			 // 可能是当前管理的页面数量
 }
 
-int16_t FIFO_PageSelector::CurrentPageUniqueVar()
-{
-	return 0;
-}
-
 PageEntry* FIFO_PageSelector::GetReplacePagePtr()
 {
-	PageEntry *ret;
-	ret = PageQueue.front();
-	return ret;
+	return PageQueue.front();
 }
 
 bool FIFO_PageSelector::RemoveReplacePagePtr()
@@ -72,7 +49,10 @@ bool FIFO_PageSelector::RemoveReplacePagePtr()
 	return ret;
 }
 
-bool FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr)
+bool FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr) //可能对性能产生较大影响
+														  //不建议在代码中调用
+														  //如果queue的实现从std变成lazytag+无锁循环队列
+														  //可以更简单的实现这个代码
 {
 	bool ret = false;
 	std :: queue<PageEntry*> TemporaryQueue;
@@ -92,6 +72,35 @@ bool FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr)
 
 }
 
+// public
+void FIFO_PageSelector::init()
+{
+	PageQueue = std::queue<PageEntry*>{};
+	ResetPRCounter();
+}
+
+void FIFO_PageSelector::clear()
+{
+	PageQueue = std::queue<PageEntry*>{};
+	ResetPRCounter();
+}
+
+int16_t FIFO_PageSelector::size()
+{
+	return PageQueue.size();
+}
+
+void FIFO_PageSelector::NotifyVisitingPages(PageEntry* PagePtr)
+{
+	// no need to do Action
+	// Might Call Log
+}
+
+int16_t FIFO_PageSelector::CurrentPageUniqueVar()
+{
+	return 0;
+}
+
 bool FIFO_PageSelector::CheckPageFull()
 {
 	return PageQueue.size() == BLCK_CNT;
@@ -99,6 +108,7 @@ bool FIFO_PageSelector::CheckPageFull()
 
 //DEBUG
 bool FIFO_PageSelector::CheckPagePtrExist(PageEntry *PagePtr)
+	//全遍历类代码都会在lazytag无锁循环队列中得到优化解决
 {
 	bool ret = false;
 	std :: queue<PageEntry*> TemporaryQueue;

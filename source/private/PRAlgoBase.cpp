@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.cpp
-#   Last Modified : 2024-11-03 11:45
+#   Last Modified : 2024-11-16 11:54
 #   Describe      : 
 #
 # ====================================================*/
@@ -14,6 +14,7 @@
 #include <iostream>
 #include "PRAlgo.h"
 #include "MyAlgo.hpp"
+#include "PRAlgoLRU.h"
 #include "PageEntry.h"
 #include "VirtualMemorySystem.h"
 #include "easylogging++.h"
@@ -30,7 +31,7 @@ void PRAlgoBase::increasePRCounter()
 
 void PRAlgoBase::LOGUsingDefaultFunc()
 {
-	//CLOG(ERROR, "class PRAlgo") << "PRAlgoBase virtual function called";
+	CLOG(ERROR, "class PRAlgo") << "PRAlgoBase virtual function called";
 }
 
 //Public
@@ -47,33 +48,38 @@ void PRAlgoBase::SwapPages(PageEntry* PageMoveToMem, PageEntry* PageMoveOutofMem
 {
 	VirtualMemorySystem::MemoryController::SwapBclks(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
 
+	// Update Page Replacement Unit
+	// Page Replacement Algo Only Manage PageEntry pointers
+	RemovePagePtr(PageMoveOutofMem);
+	AddNewPagePtr(PageMoveToMem);
+
 	//Update PageEntry info
 	MyAlgo::BasicFunc::SwapTwoIntegers(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
 	PageMoveOutofMem->resetPresent();
 	PageMoveToMem->setPresent();
 
-	//Update Page Replacement Unit info
-	RemovePagePtr(PageMoveOutofMem);
-	AddNewPagePtr(PageMoveToMem);
 }
 
 void PRAlgoBase::SwapReplacedPagesAndSpecifiedPages(PageEntry* PageMoveToMem)
 {
+	increasePRCounter();
 	PageEntry* PageMoveOutofMem = GetReplacePagePtr();
 	VirtualMemorySystem::MemoryController::SwapBclks(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
+
+	//Update Page Replacement Unit info
+	// Page Replacement Algo Only Manage PageEntry pointers
+	RemovePagePtr(PageMoveOutofMem);
+	AddNewPagePtr(PageMoveToMem);
 
 	//Update PageEntry info
 	MyAlgo::BasicFunc::SwapTwoIntegers(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
 	PageMoveOutofMem->resetPresent();
 	PageMoveToMem->setPresent();
-
-	//Update Page Replacement Unit info
-	RemovePagePtr(PageMoveOutofMem);
-	AddNewPagePtr(PageMoveToMem);
 }
 
 void PRAlgoBase::PutPageInMem(PageEntry* PageIn)
 {
+	increasePRCounter();
 	PageIn->FrameNumber = VirtualMemorySystem::MemoryController::MoveToLocalMem(PageIn->FrameNumber);
 	PageIn->setPresent();
 	AddNewPagePtr(PageIn);
@@ -114,6 +120,17 @@ bool PRAlgoBase::RemovePagePtr(PageEntry* PagePtr)
 	return false;
 }
 
+// Describer:
+// int16_t AddNewPagePtr()
+// 往管理器中放入一个页面指针，私有接口隔离
+// 返回值是{当前未定义，未来大概率不需要返回值}
+// PageEntry* GetReplacePagePtr()
+// 获取当前状态下要拿出内存的内存块指针
+// RemoveReplacePagePtr()
+// RemovePagePtr(PageEntry* )
+// 移除当前状态下要移出内存的指针
+// 移除某一指定指针（用于deAlloc）
+
 // Public Virtual
 void PRAlgoBase::init()
 {
@@ -134,6 +151,14 @@ int16_t PRAlgoBase::size()
 	LOGUsingDefaultFunc();
 	return 0;
 }
+
+
+void PRAlgoBase::NotifyVisitingPages(PageEntry* PagePtr)
+{
+	LOGUsingDefaultFunc();
+	// if no need to do Action just Leave empty
+}
+
 int16_t PRAlgoBase::CurrentPageUniqueVar()
 {
 	LOGUsingDefaultFunc();
@@ -180,7 +205,7 @@ namespace PageReplacementAlgoGlobals
 				RuntimePageAlgo = new FIFO_PageSelector;
 				break;
 			case EPageAlgoType::eLRU :
-	//			RuntimePageAlgo = new FIFO_PageSelector;
+				RuntimePageAlgo = new LRU_PageSelector;
 				break;
 			case EPageAlgoType::eClock :
 	//			RuntimePageAlgo = new FIFO_PageSelector;
@@ -189,6 +214,7 @@ namespace PageReplacementAlgoGlobals
 	//			RuntimePageAlgo = new FIFO_PageSelector;
 				break;
 		}
+		RuntimePageAlgo->init();
 	}
 }
 

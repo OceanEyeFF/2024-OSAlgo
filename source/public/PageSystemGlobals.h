@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.h
-#   Last Modified : 2024-11-07 11:40
+#   Last Modified : 2024-11-09 23:22
 #   Describe      : 
 #
 # ====================================================*/
@@ -15,6 +15,7 @@
 #define  _PAGESYSTEMGLOBALS_H
 
 #include <cstdint>
+#include "StatusTracker.h"
 
 #define TOTAL_MEMSIZE		327680
 #define LOCAL_MEMORYSIZE	65536
@@ -68,6 +69,16 @@ struct AddressConj
 	AddressConj(int8_t __PageContainerID, int8_t __PageID, int8_t __innerAddress);
 	AddressPtr ToPtr();
 };
+
+// Tracker declairation
+namespace SystemTracker
+{
+	extern StatusTracker Tracker;
+	void RegistMessageBus();
+	void CallLog(std::string CLASSNAME, std::string LOG="");
+	void RemoveLog();
+	void FlushTracker();
+}
 
 #endif // _PAGESYSTEMGLOBALS_H
 	   //

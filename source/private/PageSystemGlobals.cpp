@@ -4,16 +4,17 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.cpp
-#   Last Modified : 2024-11-05 21:02
+#   Last Modified : 2024-11-16 16:41
 #   Describe      : 
 #
 # ====================================================*/
 
 #include "PageSystemGlobals.h"
+#include "MessageBus.hpp"
 #include "PageContainer.h"
+#include "StatusTracker.h"
 
 // AddressPtr and AddressConj
-
 
 /* Address has 16bits
  * 0000000000000000
@@ -52,4 +53,45 @@ AddressPtr AddressConj::ToPtr()
 		(PageID << SECOND_LEVEL_SHIFT) |
 		(innerAddress << THIRD_LEVEL_SHIFT);
 	return ret;
+}
+
+// Tracker definition
+namespace SystemTracker
+{
+	StatusTracker Tracker;
+	void RegistMessageBus()
+	{
+		Tracker.SetDescriber("----Memory Tracker Log----");
+		MessageBus::Attach("MemLogPush",&StatusTracker::PushLog,&Tracker);
+		MessageBus::Attach("MemLogPop",&StatusTracker::PopLog,&Tracker);
+		MessageBus::Attach("MemLogClear",&StatusTracker::Clear,&Tracker);
+
+		MessageBus::Attach("MemStatusLogPrintFile",&StatusTracker::PrintStatusToLog,&Tracker);
+		MessageBus::Attach("MemStatusLogPrintScreen",&StatusTracker::PrintStatus,&Tracker);
+	}
+
+	void CallLog(std::string CLASSNAME, std::string LOG)
+	{
+		std :: string LOGINFO = "Part:\t"+CLASSNAME+"\tFuncion Name:\t"+LOG+"\t";
+		MessageBus::Notify("MemLogPush",LOGINFO);
+		if(Tracker.size() == 5)
+		{
+//			MessageBus::Notify("MemStatusLogPrintScreen"); // 探底输出
+			MessageBus::Notify("MemStatusLogPrintFile"); // 探底输出
+		}
+	}
+
+	void RemoveLog()
+	{
+		MessageBus::Notify("MemLogPop");
+	}
+
+	void FlushTracker()
+	{
+#ifdef _DEBUG
+		MessageBus::Notify("MemStatusLogPrintScreen"); // 探底输出
+#endif
+//		MessageBus::Notify("MemStatusLogPrintFile");	// 探底输出
+														// Deprecated
+	}
 }

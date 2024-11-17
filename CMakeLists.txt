@@ -25,6 +25,15 @@ else()
 	message("current platform: unknown")
 endif()
 
+# 
+# 定义一个函数来设置编译选项
+function(set_global_compile_options target)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /wd4819)
+    endif()
+endfunction()
+
+
 # 设置默认构建类型为 Release
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE RELEASE CACHE STRING "Default to Release build type" FORCE)
@@ -34,13 +43,5 @@ endif()
 string(TOUPPER "${CMAKE_BUILD_TYPE}" UPPER_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE ${UPPER_BUILD_TYPE})
 message( "current build type: " ${CMAKE_BUILD_TYPE} )
-
-# 设置调试版本的编译参数
-# Visual Studio会在Release版本中添加-DNDEBUG的编译选项 
-# 作用是禁用assert断言
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
-# 设置发布版本的编译优化参数
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DRELEASE") # 例如使用-O3进行优化
-
 
 ADD_SUBDIRECTORY(source)
