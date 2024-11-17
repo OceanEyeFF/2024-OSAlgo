@@ -46,7 +46,7 @@ file(GLOB PRIVATE_SOURCES private/*.cpp)
 # message(${LIBGO_HEADERS})
 
 # 添加可执行文件
-add_executable(Main PRIVATE main.cpp ${PRIVATE_SOURCES} ${PUBLIC_HEADERS} ${MESSAGEBUS} )
+add_executable(Main main.cpp ${PRIVATE_SOURCES} ${PUBLIC_HEADERS} ${MESSAGEBUS} )
 
 # 根据构建类型设置编译参数
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
