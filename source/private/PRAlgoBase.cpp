@@ -4,20 +4,24 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.cpp
-#   Last Modified : 2024-11-16 11:54
+#   Last Modified : 2024-11-24 02:18
 #   Describe      : 
 #
 # ====================================================*/
 
-#include "PRAlgoBase.h"
 #include <cstdint>
 #include <iostream>
-#include "PRAlgo.h"
 #include "MyAlgo.hpp"
+#include "PRAlgo.h"
+#include "PRAlgoBase.h"
+#include "PRAlgoFIFO.h"
 #include "PRAlgoLRU.h"
+#include "PRAlgoCLOCK.h"
+#include "PRAlgoIMPROVEDCLOCK.h"
 #include "PageEntry.h"
 #include "VirtualMemorySystem.h"
 #include "easylogging++.h"
+#include "MessageBus.hpp"
 
 //		PRAlgoBase Begin
 //
@@ -46,35 +50,41 @@ void PRAlgoBase::ResetPRCounter()
 
 void PRAlgoBase::SwapPages(PageEntry* PageMoveToMem, PageEntry* PageMoveOutofMem)
 {
-	VirtualMemorySystem::MemoryController::SwapBclks(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
+	TakePageOutofMem(PageMoveOutofMem);
+	PutPageInMem(PageMoveToMem);
+	//VirtualMemorySystem::MemoryController::SwapBclks(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
 
 	// Update Page Replacement Unit
 	// Page Replacement Algo Only Manage PageEntry pointers
-	RemovePagePtr(PageMoveOutofMem);
-	AddNewPagePtr(PageMoveToMem);
+	//RemovePagePtr(PageMoveOutofMem);
+	//AddNewPagePtr(PageMoveToMem);
 
 	//Update PageEntry info
-	MyAlgo::BasicFunc::SwapTwoIntegers(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
-	PageMoveOutofMem->resetPresent();
-	PageMoveToMem->setPresent();
+	//MyAlgo::BasicFunc::SwapTwoIntegers(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
+	//PageMoveOutofMem->resetPresent();
+	//PageMoveOutofMem->resetDirty();
+	//PageMoveToMem->setPresent();
 
 }
 
 void PRAlgoBase::SwapReplacedPagesAndSpecifiedPages(PageEntry* PageMoveToMem)
 {
-	increasePRCounter();
-	PageEntry* PageMoveOutofMem = GetReplacePagePtr();
-	VirtualMemorySystem::MemoryController::SwapBclks(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
 
-	//Update Page Replacement Unit info
+	TakeReplacedPageOutofMem();
+	PutPageInMem(PageMoveToMem);
+
+	// VirtualMemorySystem::MemoryController::SwapBclks(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
+
+	// Update Page Replacement Unit info
 	// Page Replacement Algo Only Manage PageEntry pointers
-	RemovePagePtr(PageMoveOutofMem);
-	AddNewPagePtr(PageMoveToMem);
+	//RemovePagePtr(PageMoveOutofMem);
+	//AddNewPagePtr(PageMoveToMem);
 
 	//Update PageEntry info
-	MyAlgo::BasicFunc::SwapTwoIntegers(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
-	PageMoveOutofMem->resetPresent();
-	PageMoveToMem->setPresent();
+	//MyAlgo::BasicFunc::SwapTwoIntegers(PageMoveOutofMem->FrameNumber, PageMoveToMem->FrameNumber);
+	//PageMoveOutofMem->resetPresent();
+	//PageMoveOutofMem->resetDirty();
+	//PageMoveToMem->setPresent();
 }
 
 void PRAlgoBase::PutPageInMem(PageEntry* PageIn)
@@ -85,11 +95,23 @@ void PRAlgoBase::PutPageInMem(PageEntry* PageIn)
 	AddNewPagePtr(PageIn);
 }
 
-void PRAlgoBase::TakePageOutofMem(PageEntry* PageOut)
+void PRAlgoBase::TakeReplacedPageOutofMem()
 {
+	PageEntry* PageOut = GetReplacePagePtr();
+	RemovePagePtr(PageOut);
 	PageOut->FrameNumber = VirtualMemorySystem::MemoryController::MoveToDiskMem(PageOut->FrameNumber);
 	PageOut->resetPresent();
+	PageOut->resetDirty();
+	PageOut->PageUniqueVariable = 0;
+}
+
+void PRAlgoBase::TakePageOutofMem(PageEntry* PageOut)
+{
 	RemovePagePtr(PageOut);
+	PageOut->FrameNumber = VirtualMemorySystem::MemoryController::MoveToDiskMem(PageOut->FrameNumber);
+	PageOut->resetPresent();
+	PageOut->resetDirty();
+	PageOut->PageUniqueVariable = 0;
 }
 
 void PRAlgoBase::HandleFuncDeAllocMem(PageEntry* deAllocPage)
@@ -109,15 +131,14 @@ PageEntry* PRAlgoBase::GetReplacePagePtr()
 	LOGUsingDefaultFunc();
 	return nullptr;
 }
-bool PRAlgoBase::RemoveReplacePagePtr()
+PageEntry* PRAlgoBase::RemoveReplacePagePtr()
 {
 	LOGUsingDefaultFunc();
-	return false;
+	return nullptr;
 }
-bool PRAlgoBase::RemovePagePtr(PageEntry* PagePtr)
+void PRAlgoBase::RemovePagePtr(PageEntry* PagePtr)
 {
 	LOGUsingDefaultFunc();
-	return false;
 }
 
 // Describer:
@@ -208,10 +229,10 @@ namespace PageReplacementAlgoGlobals
 				RuntimePageAlgo = new LRU_PageSelector;
 				break;
 			case EPageAlgoType::eClock :
-	//			RuntimePageAlgo = new FIFO_PageSelector;
+				RuntimePageAlgo = new CLOCK_PageSelector;
 				break;
 			case EPageAlgoType::eImprovedClock :
-	//			RuntimePageAlgo = new FIFO_PageSelector;
+				RuntimePageAlgo = new IMPROVEDCLOCK_PageSelector;
 				break;
 		}
 		RuntimePageAlgo->init();

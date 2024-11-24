@@ -4,12 +4,13 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageEntry.cpp
-#   Last Modified : 2024-11-16 10:40
+#   Last Modified : 2024-11-19 20:24
 #   Describe      : 
 #
 # ====================================================*/
 
 #include "PageEntry.h"
+#include "MessageBus.hpp"
 #include "PageSystemGlobals.h"
 
 // PageEntry
@@ -38,7 +39,22 @@ void PageEntry::setPresent()
 
 void PageEntry::resetPresent()
 {
-	STATUS^=(STATUS&PRESENTBITS)?PRESENTBITS:0;
+	STATUS&=(ALLBITS^PRESENTBITS);
+}
+
+bool PageEntry::isDirty()
+{
+	return STATUS&DIRTYBITS;
+}
+
+void PageEntry::setDirty()
+{
+	STATUS|=DIRTYBITS;
+}
+
+void PageEntry::resetDirty()
+{
+	STATUS&=(ALLBITS^DIRTYBITS);
 }
 
 // Not Finished : Algo
@@ -79,6 +95,7 @@ void PageEntry::Read(char* Dst) // Read()函数只能访问内存，不能访问
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Read(Dst, FrameNumber, BLCK_SIZE);
+	MessageBus::Notify("NotifyVisitingPages",this);
 	SystemTracker::RemoveLog();
 }
 
@@ -94,6 +111,8 @@ void PageEntry::Write(char* Src)// Read()函数只能访问内存，不能访问
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Write(Src, FrameNumber, BLCK_SIZE);
+	MessageBus::Notify("NotifyVisitingPages",this);
+	setDirty();
 	SystemTracker::RemoveLog();
 }
 
@@ -119,6 +138,7 @@ void PageEntry::Read(AddressConj AddrConj, char* Dst, size_t size) // 同上
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Read(Dst, FrameNumber, AddrConj.innerAddress, size);
+	MessageBus::Notify("NotifyVisitingPages",this);
 	SystemTracker::RemoveLog();
 }
 
@@ -144,6 +164,8 @@ void PageEntry::Write(AddressConj AddrConj, char* Src, size_t size)// 同上
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Write(Src, FrameNumber, AddrConj.innerAddress,  size);
+	MessageBus::Notify("NotifyVisitingPages",this);
+	setDirty();
 	SystemTracker::RemoveLog();
 }
 

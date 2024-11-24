@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoFIFO.cpp
-#   Last Modified : 2024-11-16 11:04
+#   Last Modified : 2024-11-22 21:54
 #   Describe      : 
 #
 # ====================================================*/
@@ -16,6 +16,7 @@
 #include "PRAlgoBase.h"
 #include "PageEntry.h"
 #include "PRAlgoFIFO.h"
+#include "MessageBus.hpp"
 
 
 //		FIFO_PageSelector Begin
@@ -34,27 +35,21 @@ PageEntry* FIFO_PageSelector::GetReplacePagePtr()
 	return PageQueue.front();
 }
 
-bool FIFO_PageSelector::RemoveReplacePagePtr()
+PageEntry* FIFO_PageSelector::RemoveReplacePagePtr()
 {
-	bool ret = false;
-	if(!PageQueue.empty())
-	{
-		ret = true;
-		PageQueue.pop();
-	}
-	else
-	{
-	}
-
+	assert(!PageQueue.empty() && "Page Replacement Algo is running without Page");
+	PageEntry* ret = PageQueue.front();
+	PageQueue.pop();
 	return ret;
 }
 
-bool FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr) //可能对性能产生较大影响
+void FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr) //可能对性能产生较大影响
 														  //不建议在代码中调用
 														  //如果queue的实现从std变成lazytag+无锁循环队列
 														  //可以更简单的实现这个代码
 {
-	bool ret = false;
+	assert(!PageQueue.empty() && "Page Replacement Algo is running without Page");
+	bool find = false;
 	std :: queue<PageEntry*> TemporaryQueue;
 	for(PageEntry* Value;!PageQueue.empty();)
 	{
@@ -62,14 +57,13 @@ bool FIFO_PageSelector::RemovePagePtr(PageEntry* PagePtr) //可能对性能产�
 		PageQueue.pop();
 		if(Value == PagePtr)
 		{
-			ret = true;
+			find = true;
 			continue;
 		}
 		TemporaryQueue.push(Value);
 	}
 	PageQueue = TemporaryQueue;
-	return ret;
-
+	assert(find && "Removing Page not Managing" );
 }
 
 // public
@@ -77,6 +71,7 @@ void FIFO_PageSelector::init()
 {
 	PageQueue = std::queue<PageEntry*>{};
 	ResetPRCounter();
+	MessageBus::Attach("NotifyVisitingPages",&FIFO_PageSelector::NotifyVisitingPages,this);
 }
 
 void FIFO_PageSelector::clear()

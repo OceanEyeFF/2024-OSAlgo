@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : MyAlgo.hpp
-#   Last Modified : 2024-11-04 20:57
+#   Last Modified : 2024-11-23 23:29
 #   Describe      : 
 #
 # ====================================================*/
@@ -16,17 +16,28 @@
 #include <iostream>
 #include <bitset>
 #include <cstdint>
+#include <type_traits>
 
 namespace MyAlgo
 {
 	namespace BasicFunc
 	{
-		template <class T> void SwapTwoIntegers(T &a, T &b) // Only Capable for INTEGER
+		template <class T>
+			void SwapTwoIntegers(T &a, T &b) // Only Capable for INTEGER
 		{
 			a^=b;
 			b^=a;
 			a^=b;
 		}
+
+		template <class T>
+			int CountOnes(T n)
+		{
+			static_assert(std::is_integral<T>::value, "Template argument must be an integral type.");
+			std::bitset<sizeof(T) * 8> bits(n); // 根据类型大小创建 bitset
+			return bits.count();
+		}
+		
 	}
 
 	namespace ForBitset
@@ -148,6 +159,248 @@ namespace MyAlgo
 			return size; // 如果没有找到，返回 size
 		}
 	}
+
+	template <typename T>
+	class DoublyLinkedList
+	{
+	public:
+		struct Node
+		{
+			T data;
+			Node* prev;
+			Node* next;
+
+			Node(const T& value) : data(value), prev(nullptr), next(nullptr) {}
+		};
+
+	private:
+		Node* head;
+		Node* tail;
+		size_t size;
+
+	public:
+		DoublyLinkedList() : head(nullptr), tail(nullptr), size(0) {}
+
+		~DoublyLinkedList()
+		{
+			clear();
+		}
+
+		// 添加到链表末尾
+		void push_back(const T& value)
+		{
+			Node* newNode = new Node(value);
+			if (tail) {
+				tail->next = newNode;
+				newNode->prev = tail;
+				tail = newNode;
+			} else {
+				head = tail = newNode;
+			}
+			size++;
+		}
+
+		// 添加到链表开头
+		void push_front(const T& value)
+		{
+			Node* newNode = new Node(value);
+			if (head) {
+				head->prev = newNode;
+				newNode->next = head;
+				head = newNode;
+			} else {
+				head = tail = newNode;
+			}
+			size++;
+		}
+
+		// 在指定位置插入节点
+		void insert(size_t index, const T& value)
+		{
+			if (index > size) {
+				throw std::out_of_range("Index out of range");
+			}
+			if (index == 0) {
+				push_front(value);
+			} else if (index == size) {
+				push_back(value);
+			} else {
+				Node* newNode = new Node(value);
+				Node* current = head;
+				for (size_t i = 0; i < index; ++i) {
+					current = current->next;
+				}
+				newNode->prev = current->prev;
+				newNode->next = current;
+				if (current->prev) {
+					current->prev->next = newNode;
+				}
+				current->prev = newNode;
+				if (current == head) {
+					head = newNode; // 如果插入在头部
+				}
+				size++;
+			}
+		}
+
+		// 删除指定位置的节点
+		void remove(size_t index)
+		{
+			if (index >= size) {
+				throw std::out_of_range("Index out of range");
+			}
+			if (index == 0) {
+				pop_front();
+			} else if (index == size - 1) {
+				pop_back();
+			} else {
+				Node* current = head;
+				for (size_t i = 0; i < index; ++i) {
+					current = current->next;
+				}
+				if (current->prev) {
+					current->prev->next = current->next;
+				}
+				if (current->next) {
+					current->next->prev = current->prev;
+				}
+				delete current;
+				size--;
+			}
+		}
+
+		// 在指定节点前插入
+		void insert(Node* ptr, const T& value)
+		{
+			if (!ptr) {
+				throw std::invalid_argument("Invalid pointer: ptr is null");
+			}
+
+			Node* newNode = new Node(value);
+			
+			// 插入到头部
+			if (ptr == head) {
+				newNode->next = head;
+				head->prev = newNode;
+				head = newNode;
+			} else {
+				newNode->prev = ptr->prev;
+				newNode->next = ptr;
+				if (ptr->prev) {
+					ptr->prev->next = newNode;
+				}
+				ptr->prev = newNode;
+			}
+			size++;
+		}
+
+		// 删除指定节点
+		void remove(Node* ptr)
+		{
+			if (!ptr) {
+				throw std::invalid_argument("Invalid pointer: ptr is null");
+			}
+			
+			if (ptr == head) {
+				pop_front();
+			} else if (ptr == tail) {
+				pop_back();
+			} else {
+				if (ptr->prev) {
+					ptr->prev->next = ptr->next;
+				}
+				if (ptr->next) {
+					ptr->next->prev = ptr->prev;
+				}
+				delete ptr;
+				size--;
+			}
+		}
+
+		// 删除最后一个节点
+		void pop_back()
+		{
+			if (tail) {
+				Node* temp = tail;
+				tail = tail->prev;
+				if (tail) {
+					tail->next = nullptr;
+				} else {
+					head = nullptr; // 链表变空
+				}
+				delete temp;
+				size--;
+			} else {
+				throw std::underflow_error("List is empty");
+			}
+		}
+
+		// 删除第一个节点
+		void pop_front()
+		{
+			if (head) {
+				Node* temp = head;
+				head = head->next;
+				if (head) {
+					head->prev = nullptr;
+				} else {
+					tail = nullptr; // 链表变空
+				}
+				delete temp;
+				size--;
+			} else {
+				throw std::underflow_error("List is empty");
+			}
+		}
+
+		// 清空链表
+		void clear()
+		{
+			while (head) {
+				pop_front();
+			}
+		}
+
+		// 获取链表大小
+		size_t getSize() const
+		{
+			return size;
+		}
+
+		// 遍历链表
+		void print() const
+		{
+			Node* current = head;
+			while (current) {
+				std::cout << current->data << " ";
+				current = current->next;
+			}
+			std::cout << std::endl;
+		}
+
+		// 反向遍历链表
+		void printReverse() const
+		{
+			Node* current = tail;
+			while (current) {
+				std::cout << current->data << " ";
+				current = current->prev;
+			}
+			std::cout << std::endl;
+		}
+
+		// 获取头指针
+		Node* getHead() const
+		{
+			return head;
+		}
+		// 获取尾指针
+		Node* getTail() const
+		{
+			return tail;
+		}
+	};
+
 }
 
 #endif // _MYALGO_H

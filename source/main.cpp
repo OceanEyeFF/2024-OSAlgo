@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : main.cpp
-#   Last Modified : 2024-11-16 12:19
+#   Last Modified : 2024-11-24 02:09
 #   Describe      : 
 #
 # ====================================================*/
@@ -86,7 +86,13 @@ void RunTest()
 	std::strcpy(Source,"RunTest2(PCB A Page ---- Write)");
 	std::string NUMSTR;
 
-	for(int i=0;i<256;++i)
+	for(int i=0;i<128;++i)
+	{
+		NUMSTR = std::to_string(i);
+		std::memcpy(Source+20,NUMSTR.c_str(),sizeof(NUMSTR)-1);
+		TestPCB_A.Write(Source,PtrList[0][i]);
+	}
+	for(int i=128;i<256;++i)
 	{
 		NUMSTR = std::to_string(i);
 		std::memcpy(Source+20,NUMSTR.c_str(),sizeof(NUMSTR)-1);
@@ -209,8 +215,10 @@ int main()
 	// MemorySystem Settings
 	VirtualMemorySystem::init();
 	SystemTracker::RegistMessageBus();
-	PageReplacementAlgoGlobals::SetPageAlgo(EPageAlgoType::eFIFO);
+	//PageReplacementAlgoGlobals::SetPageAlgo(EPageAlgoType::eFIFO);
 	//PageReplacementAlgoGlobals::SetPageAlgo(EPageAlgoType::eLRU);
+	//PageReplacementAlgoGlobals::SetPageAlgo(EPageAlgoType::eClock);
+	PageReplacementAlgoGlobals::SetPageAlgo(EPageAlgoType::eImprovedClock);
 
 	// LogTest
 	VLOG(0) << "This is a verbose message";

@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgo.h
-#   Last Modified : 2024-10-26 12:12
+#   Last Modified : 2024-11-20 23:05
 #   Describe      : 
 #
 # ====================================================*/
@@ -16,6 +16,9 @@
 
 #include "PRAlgoBase.h"
 #include "PRAlgoFIFO.h"
+#include "PRAlgoLRU.h"
+#include "PRAlgoCLOCK.h"
+#include "PRAlgoIMPROVEDCLOCK.h"
 
 #endif // _PRALGO_H
 	   //

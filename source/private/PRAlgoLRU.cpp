@@ -4,103 +4,90 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoLRU.cpp
-#   Last Modified : 2024-11-16 11:55
+#   Last Modified : 2024-11-23 23:52
 #   Describe      : 
 #
 # ====================================================*/
 
+#include <iterator>
 #include "PRAlgoLRU.h"
 #include "PageEntry.h"
 #include "PageSystemGlobals.h"
-#include <iterator>
+#include "MessageBus.hpp"
+#include "MyAlgo.hpp"
 
 // private
 int16_t LRU_PageSelector::AddNewPagePtr(PageEntry* PagePtr)
 {
 	PagePtr->PageUniqueVariable = CurrentPageUniqueVar();
 	PageList.push_back(PagePtr);
-	PageListMap[PagePtr->FrameNumber] = std::prev(PageList.end());
+	PageListMap[PagePtr->FrameNumber] = PageList.getTail();
 	return 0;
 }
 
 PageEntry* LRU_PageSelector::GetReplacePagePtr()
 {
-	return PageList.front();
+	assert(PageList.getSize()>0 && "Page Replacement Algo is running without Page");
+	return PageList.getHead()->data;
 }
 
-bool LRU_PageSelector::RemoveReplacePagePtr()
+PageEntry* LRU_PageSelector::RemoveReplacePagePtr()
 {
-	bool ret=false;
-	if(!PageList.empty())
-	{
-		ret = true;
-		PageEntry* PagePtr = PageList.front();
-		PageList.pop_front();
-		PageListMap[PagePtr->FrameNumber] = PageList.end();
-	}
-	else
-	{
-	}
-
-	return ret;
+	assert(PageList.getSize()>0 && "Page Replacement Algo is running without Page");
+	PageEntry* PagePtr = PageList.getHead()->data;
+	PageList.pop_front();
+	PageListMap[PagePtr->FrameNumber] = nullptr;
+	return PagePtr;
 }
 
-bool LRU_PageSelector::RemovePagePtr(PageEntry* PagePtr)
+void LRU_PageSelector::RemovePagePtr(PageEntry* PagePtr)
 {
-	bool ret = false;
-	if(CheckPagePtrExist(PagePtr))
-	{
-		ret = true;
-		PageList.erase(PageListMap[PagePtr->FrameNumber]);
-		PageListMap[PagePtr->FrameNumber] = PageList.end();
-	}
-	else
-	{
-	}
-	return  ret;
+	assert(PageList.getSize()>0 && "Page Replacement Algo is running without Page");
+	assert(CheckPagePtrExist(PagePtr) && "Removing Page not Managing" );
+	PageList.remove(PageListMap[PagePtr->FrameNumber]);
+	PageListMap[PagePtr->FrameNumber] = nullptr;
 }
 
 // public
 void LRU_PageSelector::init()
 {
 	ResetPRCounter();
-	PageList = std::list<PageEntry*>{};
+	PageList.clear();
 	for(auto it:PageListMap)
 	{
-		it = PageList.end();
+		it = nullptr;
 	}
+	MessageBus::Attach("NotifyVisitingPages",&LRU_PageSelector::NotifyVisitingPages,this);
 }
 
 void LRU_PageSelector::clear()
 {
 	ResetPRCounter();
-	PageList = std::list<PageEntry*>{};
+	PageList.clear();
 	for(auto it:PageListMap)
 	{
-		it = PageList.end();
+		it = nullptr;
 	}
 }
 
 int16_t LRU_PageSelector::size()
 {
-	return PageList.size();
+	return PageList.getSize();
 }
 
 void LRU_PageSelector::NotifyVisitingPages(PageEntry *PagePtr)
 {
 	if(!CheckPagePtrExist(PagePtr)) return;
-	std :: list<PageEntry*> :: iterator it;
-	it = PageListMap[PagePtr->FrameNumber];
-	if(it == PageList.end())
+	MyAlgo::DoublyLinkedList<PageEntry*>::Node* it = PageListMap[PagePtr->FrameNumber];
+	if(it == nullptr)
 	{
 	}
 	else
 	{
-		PageList.erase(it);
+		PageList.remove(it);
 	}
 
-	PageList.push_back(PagePtr);
-	PageListMap[PagePtr->PageUniqueVariable] = std::prev(PageList.end());
+	AddNewPagePtr(PagePtr);
 }
 
 int16_t LRU_PageSelector::CurrentPageUniqueVar()
@@ -113,17 +100,11 @@ int16_t LRU_PageSelector::CurrentPageUniqueVar()
 
 bool LRU_PageSelector::CheckPageFull()
 {
-	return PageList.size() == BLCK_CNT;
+	return PageList.getSize() == BLCK_CNT;
 }
 
 // DEBUG
 bool LRU_PageSelector::CheckPagePtrExist(PageEntry *PagePtr)
 {
-//	for(auto it:PageList) // 全遍历
-//	{
-//		if(it==PagePtr) return true;
-//	}
-
-	return PageListMap[PagePtr->FrameNumber]!=PageList.end();//算法查询
-	return false;
+	return PageListMap[PagePtr->FrameNumber]!=nullptr;//算法查询
 }

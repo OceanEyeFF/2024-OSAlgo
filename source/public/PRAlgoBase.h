@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.h
-#   Last Modified : 2024-11-11 22:33
+#   Last Modified : 2024-11-24 00:01
 #   Describe      : 
 #
 # ====================================================*/
@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include "PageEntry.h"
+#include "MessageBus.hpp"
 
 class PRAlgoBase
 {
@@ -29,8 +30,8 @@ class PRAlgoBase
 		// Functions : Operate on Record Container, Limited Access
 		virtual int16_t AddNewPagePtr(PageEntry* PagePtr);// Operation Only Apply to Record Container
 		virtual PageEntry* GetReplacePagePtr();			// Operation Only Apply to Record Container
-		virtual bool RemoveReplacePagePtr();			// Operation Only Apply to Record Container
-		virtual bool RemovePagePtr(PageEntry* PagePtr);	// Operation Only Apply to Record Container
+		virtual PageEntry* RemoveReplacePagePtr();			// Operation Only Apply to Record Container
+		virtual void RemovePagePtr(PageEntry* PagePtr);	// Operation Only Apply to Record Container
 														//
 	public:
 		int GetPRCounter();
@@ -39,6 +40,7 @@ class PRAlgoBase
 		void SwapReplacedPagesAndSpecifiedPages(PageEntry* PageMoveToMem);
 
 		void PutPageInMem(PageEntry* PageIn);
+		void TakeReplacedPageOutofMem();
 		void TakePageOutofMem(PageEntry* PageOut);
 
 		void HandleFuncDeAllocMem(PageEntry* deAllocPage);

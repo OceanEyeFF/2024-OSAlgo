@@ -3,17 +3,20 @@
 #
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
-#   File Name     : PRAlgoLRU.h
-#   Last Modified : 2024-11-23 23:51
-#   Describe      : 
+#   File Name     : PRAlgoIMPROVEDCLOCK.h
+#   Last Modified : 2024-11-24 02:08
+#   Describe      : 使用dirtybit优化读取顺序
+#					使用接近LRU的方法来记录额外的若干次访问
+#					学习HotCold算法对尝试维护简易的时效性比较方法
 #
 # ====================================================*/
 
 #pragma once
 
-#ifndef  _PRALGOLRU_H
-#define  _PRALGOLRU_H
+#ifndef  _PRALGOIMPROVEDCLOCK_H
+#define  _PRALGOIMPROVEDCLOCK_H
 
+#include <vector>
 #include <list>
 #include <cstdint>
 #include "PageEntry.h"
@@ -21,21 +24,18 @@
 #include "PageSystemGlobals.h"
 #include "MyAlgo.hpp"
 
-class LRU_PageSelector: virtual public PRAlgoBase
+class IMPROVEDCLOCK_PageSelector: virtual public PRAlgoBase
 {
 	private:
 		MyAlgo::DoublyLinkedList<PageEntry*> PageList;
-//		std :: list<PageEntry*> PageList;							// Deprecated Due to std list
-																	// does not provide
-																	// stable iterators
-																	// when making list operations
+		MyAlgo::DoublyLinkedList<PageEntry*>::Node* CurrentNode;
 		MyAlgo::DoublyLinkedList<PageEntry*>::Node* PageListMap[BLCK_CNT];
-//		std :: list<PageEntry*> :: iterator PageListMap[BLCK_CNT];	// 每个内存块下标有对应的回指指针
-																	// 在内存读写操作时
-																	// 调用NotifyVisitingPages
-																	// 删除原有指针
-																	// List尾部增加PageEntry指针
-																	// 回指指针指向新指针
+
+		int16_t UpdateCounter;
+
+		int8_t CalculateNewTemperature(int8_t Temperature);
+		void CaculatingNode();
+		void SteppingNode();
 
 		int16_t AddNewPagePtr(PageEntry* PagePtr) override;
 		PageEntry* GetReplacePagePtr() override;
@@ -57,6 +57,6 @@ class LRU_PageSelector: virtual public PRAlgoBase
 		bool CheckPagePtrExist(PageEntry *PagePtr) override;
 };
 
-#endif // _PRALGOLRU_H
+#endif // _PRALGOIMPROVEDCLOCK_H
 	   //
 	   //

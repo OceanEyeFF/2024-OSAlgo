@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageEntry.h
-#   Last Modified : 2024-11-03 11:10
+#   Last Modified : 2024-11-19 20:21
 #   Describe      : 
 #
 # ====================================================*/
@@ -26,7 +26,7 @@ struct PageEntry
 							   //
 	uint8_t STATUS;		// 0	Present bits 0在缓存 1在内存中
 						// Below Temporary Unused
-						  // 1	Dirty bits
+						  // 1	Dirty bits (Edited or not)
 						  // 2	Referenced bit
 						  // 3	Protected bit
 						  // 4	Read Permision
@@ -44,6 +44,7 @@ struct PageEntry
 #define WRITEPERMBITS	32
 #define EXECPERMBITS	64
 #define CHECKBITS		128
+#define ALLBITS			255
 
 	PageEntry(){}
 	PageEntry(int FrameNo,int PageVar,bool ispresent):FrameNumber(FrameNo),PageUniqueVariable(PageVar)
@@ -59,6 +60,11 @@ struct PageEntry
 							// 以下函数由PRAlgo调用访问
 	void setPresent();		// 设置状态为在内存中
 	void resetPresent();	// 设置状态为不在内存中
+
+	bool isDirty();		// 查询是否在内存中
+							// 以下函数由PRAlgo调用访问
+	void setDirty();		// 设置状态为在内存中
+	void resetDirty();	// 设置状态为不在内存中
 
 	void Alloc();
 	void deAlloc();
