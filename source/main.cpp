@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : main.cpp
-#   Last Modified : 2024-11-24 02:09
+#   Last Modified : 2024-11-28 15:28
 #   Describe      : 
 #
 # ====================================================*/
@@ -184,9 +184,15 @@ void RunTest()
 	}
 }
 
-void TestResult()
+void Result()
 {
 	std :: cout << PageReplacementAlgoGlobals::RuntimePageAlgo->GetPRCounter() << "\n";
+}
+
+void RunTask()
+{
+	std::string InputFilename = "CASE.in";
+	std::string OutputFilename = "CASE.out";
 }
 
 INITIALIZE_EASYLOGGINGPP
@@ -195,7 +201,7 @@ int main()
 	std::cout << "Hello World" << std::endl;
 
 	// Easy Logging plusplus Settings
-#ifdef _DEBUG
+#ifndef NDEBUG
 	el::Configurations conf("./ConfigFile/easyLogging++/debug.conf");
 //	el::Configurations conf("./ConfigFile/easyLogging++/release.conf"); 
 //	if Test release config use the line above
@@ -204,11 +210,11 @@ int main()
 	el::Loggers::setVerboseLevel(0);
 #endif
 
-#if _RELEASE
+#ifdef NDEBUG
 	el::Configurations conf("./ConfigFile/easyLogging++/release.conf");
 	el::Loggers::reconfigureAllLoggers(conf);
 	el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
-//	el::Loggers::setVerboseLevel(0);
+	el::Loggers::setVerboseLevel(0);
 #endif
 
 
@@ -231,7 +237,7 @@ int main()
 	LOG(INFO) << "					or middle value which is important";
 	LOG(INFO) << "Info Message:		Info showing program's general running status.";
 	LOG(INFO) << "This is an info message";
-#ifdef _DEBUG
+#ifndef NDEBUG
 	// RunTest
 	RunTest();
 	// TestResult
@@ -239,9 +245,9 @@ int main()
 
 #endif
 
-#ifdef _RELEASE
+#ifdef NDEBUG
 	// RunTask
-	
+	RunTask();
 	// TaskResults
 #endif
 

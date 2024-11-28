@@ -59,3 +59,6 @@ bin/
 
 # Word Temp File
 ~$*课程设计.docx
+
+# Large Files
+ToolKit/*/extraLarge/

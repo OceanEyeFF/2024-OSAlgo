@@ -17,13 +17,11 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 	message("MAIN: generating Windows Visual Studio Solution")
 	add_definitions( "-DPLATFORM_WIN" )
-else()
-	message("MAIN : Generating Makefile")
-	add_definitions( "-DPLATFORM_SAFECODE" )
 endif()
 
 # Libgo 配置
-# set(DISABLE_HOOK ON)
+set(DISABLE_HOOK ON)
+# option(DISABLE_HOOK "Disable hook functionality" ON)
 # 添加 Libgo 作为子目录
 add_subdirectory(thirdparty/libgo)
 # easylogging 配置
@@ -51,14 +49,16 @@ add_executable(Main main.cpp ${PRIVATE_SOURCES} ${PUBLIC_HEADERS} ${MESSAGEBUS} 
 # 根据构建类型设置编译参数
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
 	message(STATUS "Configuring Main for DEBUG")
-	add_compile_definitions(_DEBUG)
 	if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+		#add_compile_definitions(_DEBUG)
 		target_compile_options(Main PRIVATE -g)
 	endif()
 elseif(CMAKE_BUILD_TYPE STREQUAL "RELEASE")
 	message(STATUS "Configuring Main for RELEASE")
-	add_compile_definitions(_RELEASE)
-	target_compile_options(Main PRIVATE -O3)
+	if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+		add_compile_definitions(NDEBUG)
+		target_compile_options(Main PRIVATE -O3)
+	endif()
 endif()
 
 # 针对MSVC取消4819warnings
@@ -68,15 +68,13 @@ set_global_compile_options(Main)
 target_include_directories(Main PUBLIC public)
 target_include_directories(Main PRIVATE thirdparty/messagebus)
 
-# target_include_directories(Main PRIVATE thirdparty/libgo)
-# if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-#	message("LIBGO : Configure for Linux")
-#elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-#	message("LIBGO : Configue for Windows Visual Studio Solution")
-#	target_include_directories(Main PRIVATE thirdparty/libgo/lingo/netio/windows)
-#endif()
-
-
 # 链接第三方库
 target_link_libraries(Main PRIVATE easylogging++ libgo_static messagebus)
 
+# TestGenerator 配置
+add_executable(TestGenerator ./TestGenerator/main.cpp)
+target_link_libraries(TestGenerator PRIVATE libgo_static)
+
+# Test配置
+add_executable(TestModules ./Test/test.cpp)
+target_link_libraries(TestModules PRIVATE libgo_static)

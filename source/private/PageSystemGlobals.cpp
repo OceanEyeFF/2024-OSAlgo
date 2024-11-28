@@ -88,7 +88,7 @@ namespace SystemTracker
 
 	void FlushTracker()
 	{
-#ifdef _DEBUG
+#ifndef NDEBUG
 		MessageBus::Notify("MemStatusLogPrintScreen"); // 探底输出
 #endif
 //		MessageBus::Notify("MemStatusLogPrintFile");	// 探底输出

@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoLRU.h
-#   Last Modified : 2024-11-23 23:51
+#   Last Modified : 2024-11-24 17:24
 #   Describe      : 
 #
 # ====================================================*/
@@ -24,12 +24,12 @@
 class LRU_PageSelector: virtual public PRAlgoBase
 {
 	private:
-		MyAlgo::DoublyLinkedList<PageEntry*> PageList;
+		DoublyLinkedList<PageEntry*> PageList;
 //		std :: list<PageEntry*> PageList;							// Deprecated Due to std list
 																	// does not provide
 																	// stable iterators
 																	// when making list operations
-		MyAlgo::DoublyLinkedList<PageEntry*>::Node* PageListMap[BLCK_CNT];
+		DoublyLinkedList<PageEntry*>::Node* PageListMap[BLCK_CNT];
 //		std :: list<PageEntry*> :: iterator PageListMap[BLCK_CNT];	// 每个内存块下标有对应的回指指针
 																	// 在内存读写操作时
 																	// 调用NotifyVisitingPages

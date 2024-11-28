@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoLRU.cpp
-#   Last Modified : 2024-11-23 23:52
+#   Last Modified : 2024-11-24 17:24
 #   Describe      : 
 #
 # ====================================================*/
@@ -78,7 +78,7 @@ int16_t LRU_PageSelector::size()
 void LRU_PageSelector::NotifyVisitingPages(PageEntry *PagePtr)
 {
 	if(!CheckPagePtrExist(PagePtr)) return;
-	MyAlgo::DoublyLinkedList<PageEntry*>::Node* it = PageListMap[PagePtr->FrameNumber];
+	DoublyLinkedList<PageEntry*>::Node* it = PageListMap[PagePtr->FrameNumber];
 	if(it == nullptr)
 	{
 	}

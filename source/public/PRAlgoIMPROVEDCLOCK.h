@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoIMPROVEDCLOCK.h
-#   Last Modified : 2024-11-24 02:08
+#   Last Modified : 2024-11-24 17:24
 #   Describe      : 使用dirtybit优化读取顺序
 #					使用接近LRU的方法来记录额外的若干次访问
 #					学习HotCold算法对尝试维护简易的时效性比较方法
@@ -27,9 +27,9 @@
 class IMPROVEDCLOCK_PageSelector: virtual public PRAlgoBase
 {
 	private:
-		MyAlgo::DoublyLinkedList<PageEntry*> PageList;
-		MyAlgo::DoublyLinkedList<PageEntry*>::Node* CurrentNode;
-		MyAlgo::DoublyLinkedList<PageEntry*>::Node* PageListMap[BLCK_CNT];
+		DoublyLinkedList<PageEntry*> PageList;
+		DoublyLinkedList<PageEntry*>::Node* CurrentNode;
+		DoublyLinkedList<PageEntry*>::Node* PageListMap[BLCK_CNT];
 
 		int16_t UpdateCounter;
 

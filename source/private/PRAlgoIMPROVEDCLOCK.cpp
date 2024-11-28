@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoIMPROVEDCLOCK.cpp
-#   Last Modified : 2024-11-24 02:20
+#   Last Modified : 2024-11-24 17:25
 #   Describe      : 
 #
 # ====================================================*/
@@ -240,7 +240,7 @@ void IMPROVEDCLOCK_PageSelector::NotifyVisitingPages(PageEntry* PagePtr)
 		return;
 	}
 
-	MyAlgo::DoublyLinkedList<PageEntry*>::Node* NodePtr;
+	DoublyLinkedList<PageEntry*>::Node* NodePtr;
 	NodePtr = PageListMap[PagePtr->FrameNumber];
 	if(CurrentNode==NodePtr)
 	{
