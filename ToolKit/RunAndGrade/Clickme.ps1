@@ -1,11 +1,11 @@
 # 检查是否有传入参数
 if ($args.Count -eq 0) {
-    Write-Host "请提供至少一个参数。"
-    exit
+    Write-Host "没有传入参数，使用默认参数: FIFO LRU CLOCK IMPROVEDCLOCK"
+    $commands = @("FIFO", "LRU", "CLOCK", "IMPROVEDCLOCK")
+} else {
+    # 记录参数的字符串数组
+    $commands = @($args)
 }
-
-# 记录参数的字符串数组
-$Command = @($args)
 
 # 检查并创建 ./bin 文件夹
 $binDir = Join-Path -Path $PWD -ChildPath "bin"
