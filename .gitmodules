@@ -1,0 +1,3 @@
+[submodule "source/thirdparty/libgo"]
+	path = source/thirdparty/libgo
+	url = https://github.com/OceanEyeFF/libgo.git
