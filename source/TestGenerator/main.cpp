@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : main.cpp
-#   Last Modified : 2024-11-30 16:29
+#   Last Modified : 2024-11-30 23:45
 #   Describe      : 
 #
 # ====================================================*/
@@ -248,7 +248,7 @@ int main()
 	std::vector<std::thread> threads;
 	for(int i=0;i<CASE_COUNT;++i)
 	{
-		export_file_number = std::string("CASE")+std::to_string(9+i);
+		export_file_number = std::string("CASE")+std::to_string(0+i);
 		threads.emplace_back(Generator,export_file_number);
 	}
 
