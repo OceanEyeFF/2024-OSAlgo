@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : MyAlgo.hpp
-#   Last Modified : 2024-11-28 17:18
+#   Last Modified : 2024-11-30 00:40
 #   Describe      : 
 #
 # ====================================================*/
@@ -17,14 +17,15 @@
 #include <chrono>
 #include <cstdio>
 #include <iostream>
+#include <sstream>
 #include <bitset>
 #include <cstdint>
-#include <type_traits>
 #include <vector>
 #include <thread>
 #include <mutex>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <atomic>
 #include "libgo/libgo.h"
 #include "libgo/coroutine.h"
@@ -39,6 +40,7 @@ namespace MyAlgo
 		template <class T>
 			void SwapTwoIntegers(T &a, T &b) // Only Capable for INTEGER
 		{
+			static_assert(std::is_integral<T>::value, "Template argument must be an integral type.");
 			a^=b;
 			b^=a;
 			a^=b;
@@ -51,7 +53,41 @@ namespace MyAlgo
 			std::bitset<sizeof(T) * 8> bits(n); // 根据类型大小创建 bitset
 			return bits.count();
 		}
-		
+
+		template <class T>
+		T read_int(char* c)
+		{
+			static_assert(std::is_integral<T>::value, "Template argument must be an integral type.");
+			T ret=0;
+			short int flag=1;
+			for(;*c==' '||*c=='\n';++c);
+			if(*c=='-')
+			{
+				flag=-1;
+				++c;
+			}
+			for(;'0'<=*c&&*c<='9';++c)
+			{
+				ret=(ret<<3)+(ret<<1)+(*c-'0');
+			}
+			return ret;
+		}
+
+		// Should guarantee c has enough size
+		// not safe might access violation
+		template <class T>
+		void write_int(char* c,T x)
+		{
+			static_assert(std::is_integral<T>::value, "Template argument must be an integral type.");
+			std::strcpy(c,std::to_string(x).c_str());
+			/*
+			std::string s=std::to_string(x);
+			for(int i=0;i<s.length();++i,++c)
+			{
+				*c=s[i];
+			}
+			*/
+		}
 	}
 
 	namespace ForBitset
@@ -428,6 +464,7 @@ private:
 	std::condition_variable read_cv;	// 多线程读取同步量
 	std::ofstream coro_outfile;			// 实时追加输出
 	std::string combine_outstring;		// 合并输出
+	std::atomic<bool> isReadingComplete;// 原子锁，用于检测读取是否读完文件，帮助实现无锁读取
 										//
 
     // 读取文件的线程函数
@@ -510,10 +547,14 @@ public:
 	}
 
 	~FileHandler()
-	{}
-    // 读取文件的函数
+	{
+	}
+    // 多线程读取文件的函数
     void ReadFile()
     {
+		//未完成读写标记
+		isReadingComplete.store(false);
+		//文件输入流
         std::ifstream file(fileName);
 		// 如果文件不存在则创建文件
 		// 并且不用进行下面的所有行为
@@ -532,7 +573,6 @@ public:
 		{
 			return;
 		}
-		std :: cout << totalLines << "\n";
 		data.reserve(totalLines);
 		// 打开文件
         if (!file.is_open())
@@ -559,12 +599,16 @@ public:
         {
             t.join();
         }
+		//完成读写标记
+		isReadingComplete.store(true);
     }
 
     // 读取文件的函数
     void ReadFileSimple()
     {
-        std::ifstream file(fileName);
+		//未完成读写标记
+		isReadingComplete.store(false);
+		std::ifstream file(fileName);
 		// 如果文件不存在则创建文件
 		// 并且不用进行下面的所有行为
 		if(!file)
@@ -594,8 +638,18 @@ public:
 		while (std::getline(file, line))
 		{
 			data.push_back(line); // 将读取到的行存入 vector
+			if(!combine_outstring.empty()) combine_outstring.append("\n"); // 给上一行打回车
+			combine_outstring.append(line);					  //
 		}
+		//完成读写标记
+		isReadingComplete.store(true);
     }
+
+	// 当前是否正在读写
+	bool isReading()
+	{
+		return !isReadingComplete.load();
+	}
     // 清零并从头写入文件的函数
     void WriteToFile()
 	{
@@ -792,6 +846,74 @@ private:
     std::chrono::high_resolution_clock::time_point start_time;
     std::chrono::high_resolution_clock::time_point end_time;
     bool running;
+};
+
+class ArgConverter 
+{
+private:
+    int argc;
+    char** argv;
+
+    void stringToArgcArgv(const std::string& input) 
+    {
+        std::istringstream iss(input);
+        std::vector<std::string> args;
+        std::string arg;
+
+        // 分割字符串为参数
+        while (iss >> arg) 
+        {
+            args.push_back(arg);
+        }
+
+        // 设置 argc
+        argc = args.size();
+
+        // 分配内存给 argv
+        argv = new char*[argc + 1]; // +1 for null terminator
+
+        for (int i = 0; i < argc; ++i) 
+        {
+            argv[i] = new char[args[i].size() + 1]; // +1 for null terminator
+            std::strcpy(argv[i], args[i].c_str());
+        }
+        argv[argc] = nullptr; // 设置最后一个元素为 nullptr
+    }
+
+    void freeArgv() 
+    {
+        if (argv) 
+        {
+            for (int i = 0; i < argc; ++i) 
+            {
+                delete[] argv[i]; // 释放每个参数的内存
+            }
+            delete[] argv; // 释放 argv 的内存
+            argv = nullptr; // 防止重复释放
+        }
+    }
+
+public:
+    ArgConverter(const std::string& input) : argc(0), argv(nullptr) 
+    {
+        stringToArgcArgv(input);
+    }
+
+    ~ArgConverter() 
+    {
+        freeArgv();
+    }
+
+    int getArgc() const 
+    {
+        return argc;
+    }
+
+    char** getArgv() const 
+    {
+        return argv;
+    }
+
 };
 
 #endif // _MYALGO_H

@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.cpp
-#   Last Modified : 2024-11-16 16:41
+#   Last Modified : 2024-11-28 23:33
 #   Describe      : 
 #
 # ====================================================*/
@@ -59,7 +59,7 @@ AddressPtr AddressConj::ToPtr()
 namespace SystemTracker
 {
 	StatusTracker Tracker;
-	void RegistMessageBus()
+	void RegistMessageBus() // Use MessageBus To Control SystemTracker
 	{
 		Tracker.SetDescriber("----Memory Tracker Log----");
 		MessageBus::Attach("MemLogPush",&StatusTracker::PushLog,&Tracker);
@@ -73,25 +73,23 @@ namespace SystemTracker
 	void CallLog(std::string CLASSNAME, std::string LOG)
 	{
 		std :: string LOGINFO = "Part:\t"+CLASSNAME+"\tFuncion Name:\t"+LOG+"\t";
-		MessageBus::Notify("MemLogPush",LOGINFO);
-		if(Tracker.size() == 5)
-		{
-//			MessageBus::Notify("MemStatusLogPrintScreen"); // 探底输出
-			MessageBus::Notify("MemStatusLogPrintFile"); // 探底输出
-		}
+		Tracker.PushLog(LOGINFO);
+	}
+
+	void RemoveAllLog()
+	{
+		Tracker.Clear();
 	}
 
 	void RemoveLog()
 	{
-		MessageBus::Notify("MemLogPop");
+		Tracker.PopLog();
 	}
 
 	void FlushTracker()
 	{
 #ifndef NDEBUG
-		MessageBus::Notify("MemStatusLogPrintScreen"); // 探底输出
+		Tracker.PrintStatusToLog();
 #endif
-//		MessageBus::Notify("MemStatusLogPrintFile");	// 探底输出
-														// Deprecated
 	}
 }

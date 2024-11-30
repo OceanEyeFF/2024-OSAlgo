@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : VirtualMemorySystem.cpp
-#   Last Modified : 2024-11-10 22:17
+#   Last Modified : 2024-11-30 02:27
 #   Describe      : 
 #
 # ====================================================*/
@@ -22,6 +22,7 @@
 
 namespace VirtualMemorySystem
 {
+	int DiskOperationCounter;
 	char* pDefaultMemPool;
 	char* pMemory;
 	char* pDiskMemory;
@@ -42,6 +43,7 @@ namespace VirtualMemorySystem
 // Please use init() to initialize MemoryController
 void VirtualMemorySystem::init()
 {
+	DiskOperationCounter=0;
 	pDefaultMemPool = new char[TOTAL_MEMSIZE];
 	pMemory = pDefaultMemPool;
 	MemorySize = LOCAL_MEMORYSIZE;
@@ -62,9 +64,10 @@ void VirtualMemorySystem::release()
 	delete[] pSwapBuffer;
 }
 
-void VirtualMemorySystem::DiskOperationAnalog()
+void VirtualMemorySystem::DiskOperationCounterAdd()
 {
-	std::this_thread::sleep_for(std::chrono::microseconds(5));
+	++DiskOperationCounter;
+	//std::this_thread::sleep_for(std::chrono::microseconds(2));
 }
 
 // MemController
@@ -90,7 +93,6 @@ uint16_t VirtualMemorySystem::MemoryController::AllocLocalMem()
 
 	std :: memset(VirtualMemorySystem::pMemory+(first_zero<<8),0,256);
 	LocalMemoryUsage.set(first_zero);
-	SystemTracker::RemoveLog();
 	return first_zero;
 }
 
@@ -114,7 +116,6 @@ uint16_t VirtualMemorySystem::MemoryController::AllocDiskMem()
 
 	std :: memset(VirtualMemorySystem::pDiskMemory+(first_zero<<8),0,256);
 	DiskMemoryUsage.set(first_zero);
-	SystemTracker::RemoveLog();
 	return first_zero;
 }
 
@@ -123,7 +124,6 @@ void VirtualMemorySystem::MemoryController::deAllocDiskMem(uint16_t MemID_Disk)
 	SystemTracker::CallLog("VMS","deAllocDiskMem");
 	VirtualMemorySystem::DiskMemoryUsage.reset(MemID_Disk);
 	std :: memset(VirtualMemorySystem::pDiskMemory+(MemID_Disk<<8),0,256);
-	SystemTracker::RemoveLog();
 }
 
 void VirtualMemorySystem::MemoryController::deAllocLocalMem(uint16_t MemID_Local)
@@ -131,7 +131,6 @@ void VirtualMemorySystem::MemoryController::deAllocLocalMem(uint16_t MemID_Local
 	SystemTracker::CallLog("VMS","deAllocLocalMem");
 	VirtualMemorySystem::LocalMemoryUsage.reset(MemID_Local);
 	std :: memset(VirtualMemorySystem::pMemory+(MemID_Local<<8),0,256);
-	SystemTracker::RemoveLog();
 }
 
 void VirtualMemorySystem::MemoryController::InitMC()
@@ -144,7 +143,6 @@ void VirtualMemorySystem::MemoryController::Read(char* pMemPtr_to, uint16_t MemI
 	SystemTracker::CallLog("VMS","Read");
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8);
 	std::memcpy(pMemPtr_to, pMemPtr_Local, Memsize);
-	SystemTracker::RemoveLog();
 }
 
 void VirtualMemorySystem::MemoryController::Write(char* pMemPtr_from, uint16_t MemID_Local, size_t Memsize)
@@ -153,7 +151,6 @@ void VirtualMemorySystem::MemoryController::Write(char* pMemPtr_from, uint16_t M
 	SystemTracker::CallLog("VMS","Write");
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8);
 	std::memcpy(pMemPtr_Local, pMemPtr_from, Memsize);
-	SystemTracker::RemoveLog();
 }
 
 void VirtualMemorySystem::MemoryController::Read(char* pMemPtr_to, uint16_t MemID_Local,size_t shift, size_t Memsize)
@@ -162,7 +159,6 @@ void VirtualMemorySystem::MemoryController::Read(char* pMemPtr_to, uint16_t MemI
 	SystemTracker::CallLog("VMS","Read");
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8) + shift;
 	std::memcpy(pMemPtr_to, pMemPtr_Local, Memsize);
-	SystemTracker::RemoveLog();
 }
 
 void VirtualMemorySystem::MemoryController::Write(char* pMemPtr_from, uint16_t MemID_Local,size_t shift, size_t Memsize)
@@ -171,7 +167,6 @@ void VirtualMemorySystem::MemoryController::Write(char* pMemPtr_from, uint16_t M
 	SystemTracker::CallLog("VMS","Write");
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8) + shift;
 	std::memcpy(pMemPtr_Local, pMemPtr_from, Memsize);
-	SystemTracker::RemoveLog();
 }
 
 
@@ -201,12 +196,13 @@ void VirtualMemorySystem::MemoryController::SwapBclks(uint16_t MemID_Local, uint
 
 	// simulate hardware operation
 	// copy to swapbuffer
+	DiskOperationCounterAdd(); // 记录一次内存的移动操作
 	std :: memcpy(VirtualMemorySystem::pSwapBuffer,pMemPtr_Local,BLCK_SIZE);
 	std :: memcpy(VirtualMemorySystem::pSwapBuffer+BLCK_SIZE,pMemPtr_Disk,BLCK_SIZE);
 	// from swapbuffer copy to Mem and DiskMem
+	DiskOperationCounterAdd(); // 记录一次内存的移动操作
 	std :: memcpy(pMemPtr_Disk,VirtualMemorySystem::pSwapBuffer,BLCK_SIZE);
 	std :: memcpy(pMemPtr_Local,VirtualMemorySystem::pSwapBuffer+BLCK_SIZE,BLCK_SIZE);
-	SystemTracker::RemoveLog();
 }
 
 uint16_t VirtualMemorySystem::MemoryController::MoveToDiskMem(uint16_t MemID_Local)
@@ -221,12 +217,12 @@ uint16_t VirtualMemorySystem::MemoryController::MoveToDiskMem(uint16_t MemID_Loc
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8);
 	char* pMemPtr_Disk = pDiskMemory + (MemID_Disk<<8);
 
+	DiskOperationCounterAdd(); // 记录一次内存的移动操作
 	std :: memcpy(pMemPtr_Disk, pMemPtr_Local, BLCK_SIZE);
 	std :: memset(pMemPtr_Local, 0,BLCK_SIZE);
 
 	LocalMemoryUsage.reset(MemID_Local);
 
-	SystemTracker::RemoveLog();
 	return MemID_Disk;
 }
 
@@ -236,19 +232,18 @@ uint16_t VirtualMemorySystem::MemoryController::MoveToLocalMem(uint16_t MemID_Di
 	SystemTracker::CallLog("VMS","MoveToLocalMem");
 	if(VirtualMemorySystem::LocalMemoryUsage.count() == (LOCAL_MEMORYSIZE>>8) )
 	{
-		SystemTracker::RemoveLog();
 		return 0xffff;
 	}
 	uint16_t MemID_Local=AllocLocalMem();
 	char* pMemPtr_Local = pMemory + (MemID_Local<<8);
 	char* pMemPtr_Disk = pDiskMemory + (MemID_Disk<<8);
 
+	DiskOperationCounterAdd(); // 记录一次内存的移动操作
 	std :: memcpy(pMemPtr_Local, pMemPtr_Disk,BLCK_SIZE);
 	std :: memset(pMemPtr_Disk, 0,BLCK_SIZE);
 
 	DiskMemoryUsage.reset(MemID_Disk);
 
-	SystemTracker::RemoveLog();
 	return MemID_Local;
 }
 

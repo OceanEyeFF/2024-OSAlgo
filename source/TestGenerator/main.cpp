@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : main.cpp
-#   Last Modified : 2024-11-28 20:19
+#   Last Modified : 2024-11-30 16:29
 #   Describe      : 
 #
 # ====================================================*/
@@ -96,14 +96,14 @@ void Generator(std :: string export_file_number)
 		// 如果为非法操作根据random_number的奇偶性来决定是否修改为指定位上的必定合法操作
 		// deAlloc Read Write-> Alloc
 		// Alloc -> Write DeAlloc Read三选一
-		if(random_number&1) // 开始检测
+		if(random_number&1||OPRGENSTYLE) // 开始检测
 		{
 			switch(OperationType)
 			{
 				case 0:		// Alloc
 					if(~rec[ThreadID][Position])
 					{
-						OperationType = dis(gen)%3+1;
+						OperationType = OPRGENSTYLE?(dis(gen)%2+2):(dis(gen)%3+1);
 					}
 					else
 					{
@@ -112,6 +112,10 @@ void Generator(std :: string export_file_number)
 				case 1:		// deAlloc
 					if(~rec[ThreadID][Position])
 					{
+						if(OPRGENSTYLE)
+						{
+							OperationType=(dis(gen)%3+1);
+						}
 					}
 					else
 					{
@@ -242,9 +246,9 @@ int main()
 	Answers.reserve(CASE_COUNT+10);
 	std::string export_file_number;
 	std::vector<std::thread> threads;
-	for(int i=1;i<=CASE_COUNT;++i)
+	for(int i=0;i<CASE_COUNT;++i)
 	{
-		export_file_number = std::string("CASE")+std::to_string(20+i);
+		export_file_number = std::string("CASE")+std::to_string(9+i);
 		threads.emplace_back(Generator,export_file_number);
 	}
 

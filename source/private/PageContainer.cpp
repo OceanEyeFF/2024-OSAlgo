@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageContainer.cpp
-#   Last Modified : 2024-11-10 23:04
+#   Last Modified : 2024-11-28 23:34
 #   Describe      : 
 #
 # ====================================================*/
@@ -78,7 +78,6 @@ int8_t PageContainer::AllocNewPage()
 	SystemTracker::CallLog("PageContainer","AllocNewPage");
 	if(PagesUsage.count()==64)
 	{
-		SystemTracker::RemoveLog();
 		return -1; // No Pages Slot
 	}
 
@@ -86,7 +85,6 @@ int8_t PageContainer::AllocNewPage()
 	PagesUsage.set(EmptyPosition);
 	Pages[EmptyPosition].Alloc();
 
-	SystemTracker::RemoveLog();
 	return EmptyPosition;
 }
 
@@ -97,14 +95,12 @@ bool PageContainer::AllocNewPage(AddressConj AddrConj)
 	if(PagesUsage[PageID])
 	{
 		HandlePageContainerIllegalAccess(PageID, "Alloc Illegal");
-		SystemTracker::RemoveLog();
 		return false;		// PageAlreadyInUse
 	}
 
 	PagesUsage.set(PageID);
 	Pages[PageID].Alloc();
 
-	SystemTracker::RemoveLog();
 	return true;
 }
 
@@ -115,7 +111,6 @@ bool PageContainer::deAllocPage(AddressConj AddrConj)
 	if(!PagesUsage[PageID])
 	{
 		HandlePageContainerIllegalAccess(PageID, "deAlloc Illegal");
-		SystemTracker::RemoveLog();
 		return false;		// PageNotInUse
 	}
 
@@ -126,76 +121,71 @@ bool PageContainer::deAllocPage(AddressConj AddrConj)
 
 	Pages[PageID].deAlloc();
 	PagesUsage.reset(PageID);
-	SystemTracker::RemoveLog();
 	return true;
 }
 
-void PageContainer::Read(AddressConj AddrConj, char* Dst)
+bool PageContainer::Read(AddressConj AddrConj, char* Dst)
 {
 	SystemTracker::CallLog("PageContainer","Read");
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Read");
-		SystemTracker::RemoveLog();
-		return;
+		return false;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
 		HandlePageContainerMissingPage(AddrConj.PageID);
 	}
 	Pages[AddrConj.PageID].Read(Dst);
-	SystemTracker::RemoveLog();
+	return true;
 }
 
-void PageContainer::Write(AddressConj AddrConj, char* Dst)
+bool PageContainer::Write(AddressConj AddrConj, char* Dst)
 {
 	SystemTracker::CallLog("PageContainer","Write");
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Write");
-		SystemTracker::RemoveLog();
-		return;
+		return false;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
 		HandlePageContainerMissingPage(AddrConj.PageID);
 	}
 	Pages[AddrConj.PageID].Write(Dst);
-	SystemTracker::RemoveLog();
+	return true;
 }
 
-void PageContainer::Read(AddressConj AddrConj, char* Dst, size_t size)
+bool PageContainer::Read(AddressConj AddrConj, char* Dst, size_t size)
 {
 	SystemTracker::CallLog("PageContainer","Read");
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Read");
-		SystemTracker::RemoveLog();
-		return;
+		return false;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
 		HandlePageContainerMissingPage(AddrConj.PageID);
 	}
 	Pages[AddrConj.PageID].Read(AddrConj, Dst, size);
-	SystemTracker::RemoveLog();
+	return true;
 }
 
-void PageContainer::Write(AddressConj AddrConj, char* Dst, size_t size)
+bool PageContainer::Write(AddressConj AddrConj, char* Dst, size_t size)
 {
 	SystemTracker::CallLog("PageContainer","Write");
 	if(!PagesUsage[AddrConj.PageID])
 	{
 		HandlePageContainerIllegalAccess(AddrConj.PageID, "Write");
-		SystemTracker::RemoveLog();
-		return;
+		return false;
 	}
 	if(!Pages[AddrConj.PageID].isPresent())
 	{
 		HandlePageContainerMissingPage(AddrConj.PageID);
 	}
 	Pages[AddrConj.PageID].Write(AddrConj, Dst, size);
-	SystemTracker::RemoveLog();
+	return true;
 }
 
 char* PageContainer::GetPhysicalPtr(AddressConj AddrConj)

@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageSystemGlobals.h
-#   Last Modified : 2024-11-09 23:22
+#   Last Modified : 2024-11-28 23:39
 #   Describe      : 
 #
 # ====================================================*/
@@ -76,6 +76,7 @@ namespace SystemTracker
 	extern StatusTracker Tracker;
 	void RegistMessageBus();
 	void CallLog(std::string CLASSNAME, std::string LOG="");
+	void RemoveAllLog();
 	void RemoveLog();
 	void FlushTracker();
 }

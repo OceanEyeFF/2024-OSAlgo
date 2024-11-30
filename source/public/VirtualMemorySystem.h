@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : VirtualMemorySystem.h
-#   Last Modified : 2024-11-09 22:36
+#   Last Modified : 2024-11-30 02:20
 #   Describe      : 
 #
 # ====================================================*/
@@ -25,6 +25,7 @@
 
 namespace VirtualMemorySystem
 {
+	extern int DiskOperationCounter;
 	extern char* pDefaultMemPool;
 	extern char* pMemory;
 	extern char* pDiskMemory;
@@ -42,7 +43,7 @@ namespace VirtualMemorySystem
 	void init();
 	void release();
 
-	void DiskOperationAnalog(); // 模拟延迟
+	void DiskOperationCounterAdd(); // 记录一次内存的移动操作
 
 	class MemoryController
 	{

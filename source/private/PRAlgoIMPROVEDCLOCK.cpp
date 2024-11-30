@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoIMPROVEDCLOCK.cpp
-#   Last Modified : 2024-11-24 17:25
+#   Last Modified : 2024-11-30 18:09
 #   Describe      : 
 #
 # ====================================================*/
@@ -25,7 +25,7 @@
 // private
 //
 
-int8_t IMPROVEDCLOCK_PageSelector::CalculateNewTemperature(int8_t Temperature)
+void IMPROVEDCLOCK_PageSelector::CalculateNewTemperature(uint8_t &Temperature)
 {
 	uint8_t ReHeatMarker = 1;
 	int8_t shiftValue = 0;
@@ -51,7 +51,7 @@ int8_t IMPROVEDCLOCK_PageSelector::CalculateNewTemperature(int8_t Temperature)
 			shiftValue -=2;
 			break;
 		case 2:
-			shiftValue --;
+			--shiftValue;
 			break;
 	}
 
@@ -63,13 +63,13 @@ int8_t IMPROVEDCLOCK_PageSelector::CalculateNewTemperature(int8_t Temperature)
 	{
 		ReHeatMarker = 0;
 	}
-	return Temperature>>2 | ReHeatMarker<<4;
+	Temperature=Temperature>>2 | ReHeatMarker<<4;
 }
 
-void IMPROVEDCLOCK_PageSelector::CaculatingNode()
+void IMPROVEDCLOCK_PageSelector::CalculatingNode()
 {
-	CurrentNode->data->PageUniqueVariable =
-		CalculateNewTemperature((CurrentNode)->data->PageUniqueVariable);
+	//CalculateNewTemperature((CurrentNode)->data->PageUniqueVariable);
+	(CurrentNode)->data->PageUniqueVariable>>=1;
 }
 
 void IMPROVEDCLOCK_PageSelector::SteppingNode()
@@ -107,13 +107,13 @@ PageEntry* IMPROVEDCLOCK_PageSelector::GetReplacePagePtr()		// 我觉得这一�
 		CurrentNode = PageList.getHead();
 	}
 	// 对第一块扫描
-	CaculatingNode();
+	CalculatingNode();
 	PageEntry* ret=CurrentNode->data;
 	SteppingNode(); // node++
 	//for(int i=0;i<floor(sqrt(BLCK_CNT));++i)
 	for(int i=1;i<16;++i) // Scan A block
 	{
-		CaculatingNode();
+		CalculatingNode();
 
 		if( (CurrentNode->data)->PageUniqueVariable == ret->PageUniqueVariable )
 		{
@@ -133,12 +133,12 @@ PageEntry* IMPROVEDCLOCK_PageSelector::GetReplacePagePtr()		// 我觉得这一�
 
 	if(ret->PageUniqueVariable>>4) // 如果是高温块扫描第二块内存
 	{
-		CaculatingNode();
+		CalculatingNode();
 		PageEntry* ret2=CurrentNode->data;
 		SteppingNode(); // node++
 		for(int i=1;i<16;++i) // Scan
 		{
-			CaculatingNode();
+			CalculatingNode();
 
 			if( (CurrentNode->data)->PageUniqueVariable == ret2->PageUniqueVariable )
 			{
@@ -229,11 +229,11 @@ int16_t IMPROVEDCLOCK_PageSelector::size()
 
 void IMPROVEDCLOCK_PageSelector::NotifyVisitingPages(PageEntry* PagePtr)
 {
-	if(PagePtr->PageUniqueVariable&128)
+	if(PagePtr->PageUniqueVariable&1)
 	{
-		PagePtr->PageUniqueVariable >>= 1;
+		PagePtr->PageUniqueVariable <<= 1;
 	}
-	PagePtr->PageUniqueVariable |= 128; // 1<<7
+	PagePtr->PageUniqueVariable |= 1;
 	++UpdateCounter;
 	if(PageList.getSize()==1)
 	{

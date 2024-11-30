@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageContainer.h
-#   Last Modified : 2024-11-07 16:33
+#   Last Modified : 2024-11-28 21:25
 #   Describe      : 
 #
 # ====================================================*/
@@ -57,11 +57,11 @@ class PageContainer// 一级页表
 		bool AllocNewPage(AddressConj AddrConj);
 		bool deAllocPage(AddressConj AddrConj);
 
-		void Read(AddressConj AddrConj, char* Dst);
-		void Write(AddressConj AddrConj, char* Src);
+		bool Read(AddressConj AddrConj, char* Dst);
+		bool Write(AddressConj AddrConj, char* Src);
 
-		void Read(AddressConj AddrConj, char* Dst, size_t size);
-		void Write(AddressConj AddrConj, char* Src, size_t size);
+		bool Read(AddressConj AddrConj, char* Dst, size_t size);
+		bool Write(AddressConj AddrConj, char* Src, size_t size);
 
 		char* GetPhysicalPtr(AddressConj AddrConj);
 

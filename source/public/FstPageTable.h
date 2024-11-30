@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : FstPageTable.h
-#   Last Modified : 2024-11-02 20:48
+#   Last Modified : 2024-11-28 23:36
 #   Describe      : 
 #
 # ====================================================*/
@@ -40,13 +40,11 @@ class FstPageTable
 		// AddressConj AllocNewPages(uint16_t AllocBclkCnt);
 		// bool deAllocPages(uint16_t);
 
-		// ToDo: 读取一个内存块
-		void Read(AddressConj AddrConj, char* Dst);
-		void Write(AddressConj AddrConj, char* Src);
+		bool Read(AddressConj AddrConj, char* Dst);
+		bool Write(AddressConj AddrConj, char* Src);
 
-		// ToDo: 在指定内存块中读取若干位
-		void Read(AddressConj AddrConj, char* Dst, size_t size);
-		void Write(AddressConj AddrConj, char* Src, size_t size);
+		bool Read(AddressConj AddrConj, char* Dst, size_t size);
+		bool Write(AddressConj AddrConj, char* Src, size_t size);
 
 		char* GetPhysicalPtr(AddressConj AddrConj);
 		// DEBUG

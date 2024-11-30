@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : MemInterface.h
-#   Last Modified : 2024-11-05 21:27
+#   Last Modified : 2024-11-29 09:00
 #   Describe      : 
 #
 # ====================================================*/
@@ -14,14 +14,21 @@
 #ifndef  _MEMINTERFACE_H
 #define  _MEMINTERFACE_H
 
+#include <cstddef>
+#include <bitset>
 #include "FstPageTable.h"
 #include "PageSystemGlobals.h"
-#include <cstddef>
 
 class PCB_MemInterface
 {
+	private:
 	FstPageTable FirstPageTable;
+	AddressPtr PtrPool[256];
+	std::bitset<256> IsNull;
+
+
 	public:
+		PCB_MemInterface();
 
 		AddressPtr Alloc();				  // 假如中途没有deAlloc应该是顺序从小到大返回对应指针
 										  //
@@ -33,14 +40,19 @@ class PCB_MemInterface
 										  // 有两种基本的非法情形
 										  // 1. 错误的释放了还没有开辟的内存
 										  // 2. 已经释放过的内存块重复释放
+										  // 
+		bool Read(char* Dst, AddressPtr AddrPtr);
+		bool Write(char* Src, AddressPtr AddrPtr);
 
-		void Read(char* Dst, AddressPtr AddrPtr);
-		void Write(char* Src, AddressPtr AddrPtr);
-
-		void Read(char* Dst, AddressPtr AddrPtr, size_t size);
-		void Write(char* Src, AddressPtr AddrPtr, size_t size);
+		bool Read(char* Dst, AddressPtr AddrPtr, size_t size);
+		bool Write(char* Src, AddressPtr AddrPtr, size_t size);
 
 		char* GetPhysicalPtr(AddressPtr AddrPtr);
+
+		bool Alloc(int Poolid);			  // Alloc某一个指定的内存块
+		bool deAlloc(int Poolid);		  // deAlloc某一个指定的内存块
+		bool Read(char* Dst, int Poolid); // 读取某一个指定的内存块
+		bool Write(char* Src, int Poolid);// 写入某一个指定的内存块
 
 		void MoveIntoMem();
 		void MoveOutofMem();

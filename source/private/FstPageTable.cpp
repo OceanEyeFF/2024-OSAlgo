@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : FstPageTable.cpp
-#   Last Modified : 2024-11-10 22:12
+#   Last Modified : 2024-11-28 23:37
 #   Describe      : 
 #
 # ====================================================*/
@@ -36,53 +36,43 @@ AddressConj FstPageTable::AllocNewPage()
 		{
 			continue;
 		}
-		SystemTracker::RemoveLog();
 		return AddressConj(i,PageEntryID,0);
 	}
-	SystemTracker::RemoveLog();
 	return AddressConj(0xff,0xff,0xff);
 }
 
 bool FstPageTable::AllocNewPage(AddressConj AddrConj)
 {
 	SystemTracker::CallLog("FstPageTable","AllocNewPage");
-	bool ret=Table[AddrConj.PageContainerID].AllocNewPage(AddrConj);
-	SystemTracker::RemoveLog();
-	return ret;
+	return Table[AddrConj.PageContainerID].AllocNewPage(AddrConj);
 }
 
 bool FstPageTable::deAllocPage(AddressConj AddrConj)
 {
 	SystemTracker::CallLog("FstPageTable","deAllocNewPage");
-	bool ret=Table[AddrConj.PageContainerID].deAllocPage(AddrConj);
-	SystemTracker::RemoveLog();
-	return ret;
+	return Table[AddrConj.PageContainerID].deAllocPage(AddrConj);
 }
 
-void FstPageTable::Read(AddressConj AddrConj, char* Dst)
+bool FstPageTable::Read(AddressConj AddrConj, char* Dst)
 {
 	SystemTracker::CallLog("FstPageTable","Read");
-	Table[AddrConj.PageContainerID].Read(AddrConj,Dst);
-	SystemTracker::RemoveLog();
+	return Table[AddrConj.PageContainerID].Read(AddrConj,Dst);
 }
-void FstPageTable::Write(AddressConj AddrConj, char* Src)
+bool FstPageTable::Write(AddressConj AddrConj, char* Src)
 {
 	SystemTracker::CallLog("FstPageTable","Write");
-	Table[AddrConj.PageContainerID].Write(AddrConj,Src);
-	SystemTracker::RemoveLog();
+	return Table[AddrConj.PageContainerID].Write(AddrConj,Src);
 }
 
-void FstPageTable::Read(AddressConj AddrConj, char* Dst, size_t size)
+bool FstPageTable::Read(AddressConj AddrConj, char* Dst, size_t size)
 {
 	SystemTracker::CallLog("FstPageTable","Read");
-	Table[AddrConj.PageContainerID].Read(AddrConj,Dst,size);
-	SystemTracker::RemoveLog();
+	return Table[AddrConj.PageContainerID].Read(AddrConj,Dst,size);
 }
-void FstPageTable::Write(AddressConj AddrConj, char* Src, size_t size)
+bool FstPageTable::Write(AddressConj AddrConj, char* Src, size_t size)
 {
 	SystemTracker::CallLog("FstPageTable","Write");
-	Table[AddrConj.PageContainerID].Write(AddrConj,Src,size);
-	SystemTracker::RemoveLog();
+	return Table[AddrConj.PageContainerID].Write(AddrConj,Src,size);
 }
 
 char* FstPageTable::GetPhysicalPtr(AddressConj AddrConj)

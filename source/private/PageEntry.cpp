@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PageEntry.cpp
-#   Last Modified : 2024-11-19 20:24
+#   Last Modified : 2024-11-28 23:34
 #   Describe      : 
 #
 # ====================================================*/
@@ -65,7 +65,6 @@ void PageEntry::Alloc()
 	FrameNumber = VirtualMemorySystem::MemoryController::AllocDiskMem();
 
 	STATUS = 0;
-	SystemTracker::RemoveLog();
 }
 
 void PageEntry::deAlloc()
@@ -80,7 +79,6 @@ void PageEntry::deAlloc()
 		VirtualMemorySystem::MemoryController::deAllocDiskMem(FrameNumber);
 	}
 	resetAll();
-	SystemTracker::RemoveLog();
 }
 
 void PageEntry::Read(char* Dst) // Read()函数只能访问内存，不能访问磁盘缓存
@@ -91,12 +89,10 @@ void PageEntry::Read(char* Dst) // Read()函数只能访问内存，不能访问
 		// LOG: LOG FROM PageEntry::Read()
 		// LOG: Reading from a BLCK which not loaded in Memory
 		// LOG: Reading Failed
-		SystemTracker::RemoveLog();
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Read(Dst, FrameNumber, BLCK_SIZE);
 	MessageBus::Notify("NotifyVisitingPages",this);
-	SystemTracker::RemoveLog();
 }
 
 void PageEntry::Write(char* Src)// Read()函数只能访问内存，不能访问磁盘缓存
@@ -107,13 +103,11 @@ void PageEntry::Write(char* Src)// Read()函数只能访问内存，不能访问
 		// LOG: LOG FROM PageEntry::Write(char*)
 		// LOG: Writing to a BLCK whici not loaded in Memory
 		// LOG: Writing Failed
-		SystemTracker::RemoveLog();
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Write(Src, FrameNumber, BLCK_SIZE);
 	MessageBus::Notify("NotifyVisitingPages",this);
 	setDirty();
-	SystemTracker::RemoveLog();
 }
 
 void PageEntry::Read(AddressConj AddrConj, char* Dst, size_t size) // 同上
@@ -126,7 +120,6 @@ void PageEntry::Read(AddressConj AddrConj, char* Dst, size_t size) // 同上
 		// LOG: Expected Memory size below BLCK_SIZE
 		// LOG: Print(size)
 		// LOG: Reading Failed
-		SystemTracker::RemoveLog();
 		return;
 	}
 	if(!isPresent())
@@ -134,12 +127,10 @@ void PageEntry::Read(AddressConj AddrConj, char* Dst, size_t size) // 同上
 		// LOG: LOG FROM PageEntry::Read(char* , size_t )
 		// LOG: Reading to a BLCK whici not loaded in Memory
 		// LOG: Reading Failed
-		SystemTracker::RemoveLog();
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Read(Dst, FrameNumber, AddrConj.innerAddress, size);
 	MessageBus::Notify("NotifyVisitingPages",this);
-	SystemTracker::RemoveLog();
 }
 
 void PageEntry::Write(AddressConj AddrConj, char* Src, size_t size)// 同上
@@ -152,7 +143,6 @@ void PageEntry::Write(AddressConj AddrConj, char* Src, size_t size)// 同上
 		// LOG: Expected Memory size below BLCK_SIZE
 		// LOG: Print(size)
 		// LOG: Reading Failed
-		SystemTracker::RemoveLog();
 		return;
 	}
 	if(!isPresent())
@@ -160,13 +150,11 @@ void PageEntry::Write(AddressConj AddrConj, char* Src, size_t size)// 同上
 		// LOG: LOG FROM PageEntry::Read(char* , size_t )
 		// LOG: Reading to a BLCK whici not loaded in Memory
 		// LOG: Reading Failed
-		SystemTracker::RemoveLog();
 		return;
 	}
 	VirtualMemorySystem::MemoryController::Write(Src, FrameNumber, AddrConj.innerAddress,  size);
 	MessageBus::Notify("NotifyVisitingPages",this);
 	setDirty();
-	SystemTracker::RemoveLog();
 }
 
 // DEBUG

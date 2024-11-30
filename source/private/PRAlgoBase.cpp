@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoBase.cpp
-#   Last Modified : 2024-11-24 02:18
+#   Last Modified : 2024-11-30 16:06
 #   Describe      : 
 #
 # ====================================================*/
@@ -97,8 +97,7 @@ void PRAlgoBase::PutPageInMem(PageEntry* PageIn)
 
 void PRAlgoBase::TakeReplacedPageOutofMem()
 {
-	PageEntry* PageOut = GetReplacePagePtr();
-	RemovePagePtr(PageOut);
+	PageEntry* PageOut = RemoveReplacePagePtr();
 	PageOut->FrameNumber = VirtualMemorySystem::MemoryController::MoveToDiskMem(PageOut->FrameNumber);
 	PageOut->resetPresent();
 	PageOut->resetDirty();

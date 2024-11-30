@@ -31,6 +31,9 @@
 *.out
 *.app
 
+# Logs
+*.log
+
 # Swap
 [._]*.s[a-v][a-z]
 !*.svg
@@ -61,4 +64,6 @@ bin/
 ~$*课程设计.docx
 
 # Large Files
-ToolKit/*/extraLarge/
+ToolKit/RunAndGrade/extraLarge/
+ToolKit/RunAndGrade/bin/
+ToolKit/RunAndGrade/tmp/

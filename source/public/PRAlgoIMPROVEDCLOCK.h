@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoIMPROVEDCLOCK.h
-#   Last Modified : 2024-11-24 17:24
+#   Last Modified : 2024-11-30 18:08
 #   Describe      : 使用dirtybit优化读取顺序
 #					使用接近LRU的方法来记录额外的若干次访问
 #					学习HotCold算法对尝试维护简易的时效性比较方法
@@ -33,8 +33,8 @@ class IMPROVEDCLOCK_PageSelector: virtual public PRAlgoBase
 
 		int16_t UpdateCounter;
 
-		int8_t CalculateNewTemperature(int8_t Temperature);
-		void CaculatingNode();
+		void CalculateNewTemperature(uint8_t& Temperature);
+		void CalculatingNode();
 		void SteppingNode();
 
 		int16_t AddNewPagePtr(PageEntry* PagePtr) override;
