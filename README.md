@@ -44,11 +44,11 @@
 ### 克隆本项目
 
 ```bash
-git clone https://github.com/OceanEyeFF/2024-OSAlgo.git
+git clone --recurse-submodules https://github.com/OceanEyeFF/2024-OSAlgo.git
 ```
 或者
 ```bash
-git clone git@github.com:OceanEyeFF/2024-OSAlgo.git
+git clone --recurse-submodules git@github.com:OceanEyeFF/2024-OSAlgo.git
 ```
 
 ### 生成makefile文件/sln项目
