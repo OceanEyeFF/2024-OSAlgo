@@ -42,6 +42,7 @@ for command in "${commands[@]}"; do
     # 移动所有的 *-out 文件夹和 *.txt 文件到 ./bin 目录下
     mv out-* "$binDir/" 2>/dev/null
     mv *.txt "$binDir/" 2>/dev/null
+    mv *.csv "$binDir/" 2>/dev/null
 done
 
 echo "所有命令已执行完毕。"

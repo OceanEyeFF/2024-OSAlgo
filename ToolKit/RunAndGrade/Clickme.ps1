@@ -30,7 +30,7 @@ for ($i = 0; $i -lt $Commands.Count; $i++) {
     }
 
     # 移动所有的 *-out 文件夹和 *.txt 文件到 ./bin 目录下
-    Get-ChildItem -Path "$PWD\out-*", "$PWD\*.txt" | Move-Item -Destination $binDir -Force
+    Get-ChildItem -Path "$PWD\out-*", "$PWD\*.txt", "$PWD\*.csv" | Move-Item -Destination $binDir -Force
 }
 
 Write-Host "所有命令已执行完毕。"
