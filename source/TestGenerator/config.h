@@ -4,7 +4,7 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : config.h
-#   Last Modified : 2024-11-30 23:45
+#   Last Modified : 2024-12-01 00:18
 #   Describe      : 
 #
 # ====================================================*/
@@ -14,19 +14,19 @@
 
 #define CASE_COUNT			4
 
-#define OPRGENSTYLE			0
+#define OPRGENSTYLE			1
 
-#define OPR_COUNT			200000
+#define OPR_COUNT			10000000
 //Type0 少PCB但是单个PCB的内存占用量多
 //Case 0-3
 //Case 8
-#define THREAD_COUNT		3
-#define MEMLIMIT			256
+//#define THREAD_COUNT		3
+//#define MEMLIMIT			256
 //Type1 多PCB但是单个PCB的内存占用量少
 //Case 4-7
 //Case 9
-//#define THREAD_COUNT		48
-//#define MEMLIMIT			16
+#define THREAD_COUNT		48
+#define MEMLIMIT			16
 #define FREQUENTUSE			4		// 25%的高频访问数据
 #define FREQUENTAGE			103		// 80%的高频读写
 

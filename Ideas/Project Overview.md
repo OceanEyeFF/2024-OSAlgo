@@ -4,7 +4,7 @@
    Author        : OceanEyeFF
    Email         : fdch00@163.com
    File Name     : Project Overview.md
-   Last Modified : 2024-10-21 13:58
+   Last Modified : 2024-12-02 21:35
    Describe      : 
 
 -->
@@ -55,18 +55,6 @@
 4. 内存查错
 5. 内存调试（Tracing）和监控接口
 
-#### linux环境下C++多线程程序可用的性能测试工具
-
-1. Valgrind with helgrind
-2. perf
-3. gperftools(Google Performance Tools)
-4. Google Benchmark
-
-#### linux环境下可能的优化项
-
-* 开启huge pages 并且在程序中使用使用mmap
-* 编译O3优化
-
 #### 实验设计流程
 
 1. 实验思路整理，架构整体设计
@@ -78,61 +66,28 @@
 6. C++ 源代码添加性能测试程序段，性能指标数据输出
 7. 多个算法性能比较，实验总结
 
-#### 接口设计和函数设计的基本要求(TO DO: OE)
+### 编译环境
 
-参考**Class Design.md**写类说明文档
+#### Windows环境
 
-### 系统与编译环境说明(TO DO: OE)
+Windows 10 20H2
+Visual Studio 2022
+CMake
 
-#### 编程环境
+#### Linux环境
+CMake
+Make
+g++
 
-#### 编译环境
+### Third Party
+
+* abumq/easyloggingpp
+* OceanEyeFF/libgo
+* messagebus(源自旧项目)
 
 ### 其他文档(To do OE)
 
-1. 架构设计文档 Structure Design.md
-2. 接口描述文档 Class Design Document/
-3. 代码注释文档 
-4. 文档编写规范文档 Project Develop Document/
-5. 第三方库文档 Third Party.md
-
-### 工作日历(To do OE)
-
-10月15日项目开始
-
-```mermaid
-gantt
-	title 工作日历
-	dateFormat YYYY-MM-DD
-
-	section 文档和思路
-	内存端设计    : done				,2024-10-15,5d
-	接口端设计    : done				,2024-10-25,5d
-	文档杂项	: active	,2024-10-15,2024-10-23
-	Lab Report 	: 	,2024-11-15,2d
-
-	section 内存管理器代码
-	RAM			: active	,	descRAM			,2024-10-20,4d
-	Page		: active	,	descPage		,2024-10-20,4d
-	Container	: active	,	descContainer	,2024-10-21,5d
-	Algo		: active	,	descContainer	,2024-10-23,5d
-	RAM-doc		: active			,2024-10-23,1d
-	Page-doc	: active			,2024-10-23,2d
-	Containerdoc: active			,2024-10-23,3d
-	Algo-doc	: active			,2024-10-23,5d
-	
-	section 内存管理器测试
-	内存管理器测试    : 		,2024-10-24,3d
-	封装接口测试    :			,2024-10-24,3d
-	
-	section 交互代码
-	占位符 : ,2024-11-01,1d
-	section 交互代码测试
-	占位符 : ,2024-11-01,1d
-
-	section 测试样例生成代码
-	占位符 : ,2024-11-01,1d
-	section 性能测试与比较
-	占位符 : ,2024-11-01,1d
-
-```
+1. 架构设计文档		Structure Design.md
+2. 类描述模板		Class Design Document/
+3. 文档编写规范		Project Develop Document/
+4. 代码注释文档		../source/documents
