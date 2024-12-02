@@ -4,7 +4,7 @@
    Author        : OceanEyeFF
    Email         : fdch00@163.com
    File Name     : Markdown.md
-   Last Modified : 2024-09-10 00:05
+   Last Modified : 2024-12-01 23:53
    Describe      : 
 
 --->
@@ -47,7 +47,7 @@ Markdown作为一种通用的文档格式，在工程开发中被大量的使用
 ---- 这是一个分割线
 
 ```
-我不建议开太多层小节，小节过多会影响文章的易读性，也说明实际上还可以对结构进行进一步的拆分优化
+不建议开太多层小节，小节过多会影响文章的易读性，也说明实际上还可以对结构进行进一步的拆分优化
 
 #### Markdown正文
 

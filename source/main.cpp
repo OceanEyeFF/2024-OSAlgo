@@ -273,16 +273,18 @@ void RunTask()
 {
 	Timer timer;
 	timer.reset();
-	timer.start();
 	std::string InputFilename = "CASE.in";
 	std::string OutputFilename = "CASE.out";
 	std::string PRCounterFilename(AlgoTypeStr);
 	PRCounterFilename.append(".txt");
+	std::string CSVDataFilename(AlgoTypeStr);
+	CSVDataFilename.append(".csv");
 
-	GoSchedHost SchedHost;
+	GoSchedHost SchedHost(1);
 	FileHandler InputFile(InputFilename,SchedHost.getSched());
 	FileHandler OutputFile(OutputFilename,SchedHost.getSched());
 	FileHandler PRCounterFile(PRCounterFilename,SchedHost.getSched());
+	FileHandler CSVDataFile(CSVDataFilename, SchedHost.getSched());
 
 	std::thread t1(&FileHandler::ReadFileSimple,&InputFile);
 	std::thread t2(&FileHandler::ReadFileSimple,&OutputFile);
@@ -310,6 +312,7 @@ void RunTask()
 	}
 	*/
 
+	timer.start();
 	while(true)
 	{
 		for(;id<InputLinesRef.size();++id)
@@ -325,10 +328,9 @@ void RunTask()
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}
-
-	OutputFile.WriteToFileOnlyFlush();
 	timer.stop();
 
+	OutputFile.WriteToFileOnlyFlush();
 	// 输出时间花销和触发缺页中断次数
 	//Elapsed time:				
 	//Page Replacement Counter:	
@@ -352,6 +354,21 @@ void RunTask()
 	PRCounterFile.AddLineSimpleMerge(MemMoveCountLine);
 
 	PRCounterFile.WriteToFileOnlyFlush();
+
+	CSVDataFile.ReadFileSimple();
+	if (CSVDataFile.GetData().size() == 0)
+	{
+		CSVDataFile.AddLineSimpleMerge("CASE,time,PageReplacementCounter,MemmoveCounter");
+	}
+	std::string CSV_Line("CASE" + std::to_string(CSVDataFile.GetData().size() - 1));
+	// Time
+	CSV_Line.append("," + std::to_string(timer.elapsedMilliseconds()));
+	// PRCounter
+	CSV_Line.append("," + std::to_string(PageReplacementAlgoGlobals::RuntimePageAlgo->GetPRCounter()));
+	// DiskOperation Counter
+	CSV_Line.append("," + std::to_string(VirtualMemorySystem::DiskOperationCounter));
+	CSVDataFile.AddLineSimpleMerge(CSV_Line);
+	CSVDataFile.WriteToFileOnlyFlush();
 }
 
 INITIALIZE_EASYLOGGINGPP

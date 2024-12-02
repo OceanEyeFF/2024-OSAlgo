@@ -4,16 +4,18 @@
 #   Author        : OceanEyeFF
 #   Email         : fdch00@163.com
 #   File Name     : PRAlgoIMPROVEDCLOCK.cpp
-#   Last Modified : 2024-11-30 18:09
+#   Last Modified : 2024-11-30 23:53
 #   Describe      : 
 #
 # ====================================================*/
 
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <iterator>
+#include <thread>
 #include <vector>
 #include <algorithm>
 #include "PRAlgoIMPROVEDCLOCK.h"
@@ -24,55 +26,12 @@
 
 // private
 //
-
-void IMPROVEDCLOCK_PageSelector::CalculateNewTemperature(uint8_t &Temperature)
+inline void IMPROVEDCLOCK_PageSelector::CalculatingNode()
 {
-	uint8_t ReHeatMarker = 1;
-	int8_t shiftValue = 0;
-
-	switch(Temperature>>6) // Recent Visit is at higher position
-	{
-		case 3:
-			shiftValue +=2;
-			break;
-		case 2:
-			shiftValue +=1;
-			break;
-	}
-	switch((Temperature>>4) & 3) // Recent Visit is at higher position
-	{
-		case 3:
-			shiftValue +=1;
-			break;
-	}
-	switch(MyAlgo::BasicFunc::CountOnes((~Temperature)>>4))
-	{
-		case 3:
-			shiftValue -=2;
-			break;
-		case 2:
-			--shiftValue;
-			break;
-	}
-
-	if(shiftValue>=0)
-	{
-		ReHeatMarker <<= shiftValue;
-	}
-	else
-	{
-		ReHeatMarker = 0;
-	}
-	Temperature=Temperature>>2 | ReHeatMarker<<4;
+	(CurrentNode)->data->PageUniqueVariable>>=(CurrentNode->data->PageUniqueVariable>=8?1:2);
 }
 
-void IMPROVEDCLOCK_PageSelector::CalculatingNode()
-{
-	//CalculateNewTemperature((CurrentNode)->data->PageUniqueVariable);
-	(CurrentNode)->data->PageUniqueVariable>>=1;
-}
-
-void IMPROVEDCLOCK_PageSelector::SteppingNode()
+inline void IMPROVEDCLOCK_PageSelector::SteppingNode()
 {
 	CurrentNode=CurrentNode->next;
 	if(CurrentNode == nullptr)
@@ -100,65 +59,17 @@ int16_t IMPROVEDCLOCK_PageSelector::AddNewPagePtr(PageEntry* PagePtr)
 PageEntry* IMPROVEDCLOCK_PageSelector::GetReplacePagePtr()		// 我觉得这一部分还可以改的更优美
 {
 	assert(PageList.getSize()>0 && "Page Replacement Algo is running without Page");
-
 	// 初始化
 	if(CurrentNode==nullptr)
 	{
 		CurrentNode = PageList.getHead();
 	}
-	// 对第一块扫描
-	CalculatingNode();
-	PageEntry* ret=CurrentNode->data;
-	SteppingNode(); // node++
-	//for(int i=0;i<floor(sqrt(BLCK_CNT));++i)
-	for(int i=1;i<16;++i) // Scan A block
+	while(CurrentNode->data->PageUniqueVariable)
 	{
 		CalculatingNode();
-
-		if( (CurrentNode->data)->PageUniqueVariable == ret->PageUniqueVariable )
-		{
-			if((CurrentNode->data)->isDirty())
-			{
-				ret = CurrentNode->data;
-			}
-		}
-
-		if( (CurrentNode->data)->PageUniqueVariable < ret->PageUniqueVariable )
-		{
-			ret = CurrentNode->data;
-		}
-
-		SteppingNode(); // node++
+		SteppingNode();
 	}
-
-	if(ret->PageUniqueVariable>>4) // 如果是高温块扫描第二块内存
-	{
-		CalculatingNode();
-		PageEntry* ret2=CurrentNode->data;
-		SteppingNode(); // node++
-		for(int i=1;i<16;++i) // Scan
-		{
-			CalculatingNode();
-
-			if( (CurrentNode->data)->PageUniqueVariable == ret2->PageUniqueVariable )
-			{
-				if((CurrentNode->data)->isDirty())
-				{
-					ret2 = CurrentNode->data;
-				}
-			}
-
-			if( (CurrentNode->data)->PageUniqueVariable < ret2->PageUniqueVariable )
-			{
-				ret2 = CurrentNode->data;
-			}
-
-			SteppingNode(); // node++
-		}
-
-		ret = (ret->PageUniqueVariable<=ret2->PageUniqueVariable)?ret:ret2;
-	}
-	return ret;
+	return CurrentNode->data;
 }
 
 PageEntry* IMPROVEDCLOCK_PageSelector::RemoveReplacePagePtr()
@@ -168,11 +79,7 @@ PageEntry* IMPROVEDCLOCK_PageSelector::RemoveReplacePagePtr()
 	PageEntry* ReplacePagePtr = GetReplacePagePtr();
 	if(CurrentNode->data == ReplacePagePtr)
 	{
-		CurrentNode = CurrentNode->next;
-		if(!CurrentNode)
-		{
-			CurrentNode = PageList.getHead();
-		}
+		SteppingNode();
 	}
 	PageList.remove(PageListMap[ReplacePagePtr->FrameNumber]);
 	PageListMap[ReplacePagePtr->FrameNumber] = nullptr;
@@ -229,6 +136,7 @@ int16_t IMPROVEDCLOCK_PageSelector::size()
 
 void IMPROVEDCLOCK_PageSelector::NotifyVisitingPages(PageEntry* PagePtr)
 {
+
 	if(PagePtr->PageUniqueVariable&1)
 	{
 		PagePtr->PageUniqueVariable <<= 1;
@@ -244,11 +152,7 @@ void IMPROVEDCLOCK_PageSelector::NotifyVisitingPages(PageEntry* PagePtr)
 	NodePtr = PageListMap[PagePtr->FrameNumber];
 	if(CurrentNode==NodePtr)
 	{
-		CurrentNode = CurrentNode->next;
-		if(CurrentNode==nullptr)
-		{
-			CurrentNode = PageList.getHead();
-		}
+		SteppingNode();
 	}
 	PageList.remove(NodePtr);
 //	NodePtr = nullptr;

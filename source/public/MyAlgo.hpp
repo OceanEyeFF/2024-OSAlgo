@@ -734,7 +734,6 @@ public:
 		{
 			if(!this->combine_outstring.empty()) this->combine_outstring.append("\n"); // 给上一行打回车
 			this->combine_outstring.append(newLine);
-			co_sleep(10);
 		};
 		lock.unlock();
     }

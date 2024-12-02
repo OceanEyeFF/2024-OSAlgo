@@ -4,7 +4,7 @@
    Author        : OceanEyeFF
    Email         : fdch00@163.com
    File Name     : Structure Design.md
-   Last Modified : 2024-10-27 18:53
+   Last Modified : 2024-12-02 21:35
    Describe      : 
 
 -->
@@ -14,10 +14,8 @@
 
 实验内存系统架构我们根据需求进行模块化：
 1. 内存管理器端，用于实现不同类型的页面替换算法
-2. 主函数端，用于处理和样例文件和测试文件的交互
-
-内存管理器端的进一步模块化会在下面进行。
-主函数的模块化 **TO DO (OE) **
+2. PCB中间层，存储实际指针数据，提前过滤无效操作
+3. 主函数
 
 ------
 
@@ -47,7 +45,7 @@ namespace VirtualSystemMemoryController
 同时编写一个内存管理器，能够做到
 1. 读写内存(Alloc DeAlloc/Free)
 2. 交换指定的内存和虚拟内存
-3. *Extend:支持内存区块的有保护的多线程读写*
+3. *Extend:支持内存区块的有保护的多线程读写、内存的区间读写*
 
 ```C++
 namespace VirtualSystemMemoryAllocator
@@ -77,15 +75,10 @@ namespace VirtualSystemMemoryAllocator
 4. 存储空间中平均能够给每个一级页表16个可用MemBclk
 
 ***
-
 块：256B
 二级页表块数量：64
 二级页表内存内块数量；16
-
 一级页表数量：4
-
-
-
 ***
 
 ##### ePageAlgo
@@ -129,10 +122,7 @@ Class PageUnitBase
 
 ##### 页面替换算法设计
 
-专开一个文件来写(To Do OE)
-
 页面处理算法文档：ToDo OE
-页面均衡负载文档：ToDO OE
 
 ##### AddressPtr和AddressConj
 
@@ -165,7 +155,7 @@ struct AddressConj
 实现的方法
 * std :: vector<PageContainer>
 * class Page[a-z]*
-* ``` <template typename T> class Container<T>```
+*``` <template typename T> class Container<T>```
 
 *考虑多线程设计*
 

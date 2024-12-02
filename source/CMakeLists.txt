@@ -20,8 +20,8 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 # Libgo 配置
-set(DISABLE_HOOK ON)
-# option(DISABLE_HOOK "Disable hook functionality" ON)
+# set(DISABLE_HOOK)
+option(DISABLE_HOOK "Disable hook functionality" ON)
 # 添加 Libgo 作为子目录
 add_subdirectory(thirdparty/libgo)
 # easylogging 配置
